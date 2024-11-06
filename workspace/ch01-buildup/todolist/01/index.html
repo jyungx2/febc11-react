@@ -51,9 +51,9 @@
       // ['http://localhost:5500/workspace-ins/', '/ch01-buildup/todolist/sample/']
       document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
 
-      // 샘플 목록
+      // 샘플 목록 (Object-shaped datas we get from DB before ex. vanilla-project)
       const itemList = [
-        { no: 1, title: '두부', done: true} ,
+        { no: 1, title: '두부', done: true },
         { no: 2, title: '계란', done: false },
         { no: 3, title: '라면', done: true },
       ];
@@ -70,7 +70,7 @@
       itemList.forEach((item, i) => {
         const liEl = getTodoItemElem(item);
 
-        // 🚨 appendChild의 매개변수에는 노드 객체가 와야하는데, string(문자열 = getTodoItemElem 함수 리턴값)이 왔다!
+        // 🚨 appendChild의 매개변수에는 노드 객체가 와야하는데, string(문자열 = 🔴 getTodoItemElem 함수 리턴값)이 왔다!
         // todolistEl.appendChild(liEl) // 💥Error
 
         // 🔴 innerHTML을 사용하면, 브라우저가 알아서 자동으로 string -> html로 바꿔서 출력하기 때문에 괜찮다 ....
@@ -79,7 +79,7 @@
         // 문자열채로 하면 html 코드 만드는 것은 간편하지만, 돔에 추가한 다음에 쿼리셀렉터로 또 꺼내고, addEventlistener를 추가해야 하기 때문에 이렇게 되면 코드가 분산되고 복잡해짐...
         // 🟠 이 방법 안 쓰고, 돔 객체를 처음부터 만들어서 반환하도록 작성하자.
         todolistEl.appendChild(liEl) // 여기서는 에러 발생❌
-        // todolistEl.innerHTML = liEl; // [object HTMLLiElement]
+        // todolistEl.innerHTML = liEl; // [object HTMLLiElement] => 돔노드 객체여서 HTMLLiElement라고 출력되는 것 같다..
       })
 
       // 한건의 Todo 객체를 받아서 ✨DOM 객체로 만들어✨ 반환
@@ -93,7 +93,7 @@
         //     </li>
         // `)
 
-        // 돔 요소들 생성
+        // 🟠 돔 요소들 생성
         // <li></li> 생성
         const liElem = document.createElement('li');
         // <span> 생성
@@ -119,7 +119,7 @@
         if (item.done) {
             // 완료된 것들 -> cross out
             const sElem = document.createElement('s');
-            // <s>샘플1</s>
+            // <s>샘플1</s> 💥appendChild는 이동개념! (여기서 고려되진 X)
             sElem.appendChild(titleTxt);
             // <span><s>샘플1</s></span>
             titleElem.appendChild(sElem);
