@@ -78,7 +78,8 @@
         // 다만, 문자열이기 때문에 이벤트추가를 하지 못한다는 단점 존재
         // 문자열채로 하면 html 코드 만드는 것은 간편하지만, 돔에 추가한 다음에 쿼리셀렉터로 또 꺼내고, addEventlistener를 추가해야 하기 때문에 이렇게 되면 코드가 분산되고 복잡해짐...
         // 🟠 이 방법 안 쓰고, 돔 객체를 처음부터 만들어서 반환하도록 작성하자.
-
+        todolistEl.appendChild(liEl) // 여기서는 에러 발생❌
+        // todolistEl.innerHTML = liEl; // [object HTMLLiElement]
       })
 
       // 한건의 Todo 객체를 받아서 ✨DOM 객체로 만들어✨ 반환
@@ -105,9 +106,9 @@
 
         // 텍스트 노드들 생성
         // 1
-        const noTxt = document.createTextNode('1');
+        const noTxt = document.createTextNode(item.no);
         // 샘플1
-        const titleTxt = document.createTextNode('샘플1');
+        const titleTxt = document.createTextNode(item.title);
         // 삭제
         const deleteTxt = document.createTextNode('삭제');
 
@@ -135,6 +136,8 @@
         liElem.appendChild(noElem);
         liElem.appendChild(titleElem);
         liElem.appendChild(deleteElem);
+
+        return liElem;
       }
 
 
