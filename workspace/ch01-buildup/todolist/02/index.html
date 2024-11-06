@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List App</title>
+  </head>
+  <body>
+    <div id="todo">
+      <header>
+        <h1>Todo List - 등록 :)</h1>
+        <p>파일 경로: <span id="filepath"></span></p>
+      </header>
+      <div id="main">
+        <div id="container">
+          <ul>
+            <li>
+              <h2>쇼핑 목록</h2>
+              <div class="todoinput">
+                <input type="text" autofocus onkeyup="handleAddKeyup(event)" />
+                <button type="button" onclick="handleAdd()">추가</button>
+              </div>
+              <ul class="todolist">
+                <li>
+                  <span>1</span>
+                  <span><s>샘플1</s></span>
+                  <button type="button">삭제</button>
+                </li>
+                <li>
+                  <span>2</span>
+                  <span>샘플2</span>
+                  <button type="button">삭제</button>
+                </li>
+                <li>
+                  <span>3</span>
+                  <span>샘플3</span>
+                  <button type="button">삭제</button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <footer>
+        <p>멋쟁이 사자처럼 FrontEnd BootCamp</p>
+      </footer>
+    </div>
+
+    <script type="text/javascript">
+      // http://localhost:5500/workspace-ins/ch01-buildup/todolist/sample/
+      // ['http://localhost:5500/workspace-ins/', '/ch01-buildup/todolist/sample/']
+      document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
+
+      // 샘플 목록
+      const itemList = [
+        { no: 1, title: '두부', done: true} ,
+        { no: 2, title: '계란', done: false },
+        { no: 3, title: '라면', done: true },
+      ];
+
+      // ul 요소
+      const todolistEl = document.querySelector('.todolist');
+
+      // 기존 목록 삭제
+      while(todolistEl.firstChild) {
+        todolistEl.firstChild.remove();
+      }
+
+      // ItemList 배열의 각 todo 아이템을 화면에 추가
+      itemList.forEach((item, i) => {
+        const liEl = getTodoItemElem(item);
+        todolistEl.appendChild(liEl)
+      })
+
+      // 한 건의 Todo 객체를 받아서 ✨DOM 객체로 만들어✨ 반환
+      function getTodoItemElem(item){
+        // 🔴
+        // return (`
+        //     <li>
+        //       <span>${item.no}</span>
+        //       <span>${item.done ? `<s>${item.title}</s>` : item.title}</s>}</span>
+        //       <button type="button">삭제</button>
+        //     </li>
+        // `)
+
+        // 돔 요소들 생성
+        // <li></li> 생성
+        const liElem = document.createElement('li');
+        // <span> 생성
+        const noElem = document.createElement('span');
+        // <span> 생성
+        const titleElem = document.createElement('span');
+        // <button></button> 생성
+        const deleteElem = document.createElement('button');
+
+
+        // 텍스트 노드들 생성
+        // 1
+        const noTxt = document.createTextNode(item.no);
+        // 샘플1
+        const titleTxt = document.createTextNode(item.title);
+        // 삭제
+        const deleteTxt = document.createTextNode('삭제');
+
+        // <span>1</span>
+        noElem.appendChild(noTxt);
+
+        // <span><s>샘플1</s></span>
+        if (item.done) {
+            // 완료된 것들 -> cross out
+            const sElem = document.createElement('s');
+            // <s>샘플1</s>
+            sElem.appendChild(titleTxt);
+            // <span><s>샘플1</s></span>
+            titleElem.appendChild(sElem);
+        } else {
+            // 미완료 (<span>샘플1</span>)
+            titleElem.appendChild(titleTxt);
+        }
+
+        // <button type="button">삭제</button>
+        deleteElem.setAttribute('type', 'button');
+        deleteElem.appendChild(deleteTxt);
+
+        // <li></li>에 <span> 두 개 추가, <button>도 추가
+        liElem.appendChild(noElem);
+        liElem.appendChild(titleElem);
+        liElem.appendChild(deleteElem);
+
+        return liElem;
+      }
+
+      //  <div class="todoinput">
+      //  <input type="text" autofocus onkeyup="handleAddKeyup(event)" />
+      //  <button type="button" onclick="handleAdd()">추가</button>
+      //  </div>
+
+      // "추가" 버튼 클릭했을 때, 호출되는 이벤트
+      const handleAdd = () => {
+        const inputElem = document.querySelector('.todoinput > input');
+        if (inputElem.value.trim() !== '') {
+          addItem(inputElem.value);
+          inputElem.value = '';
+          inputElem.focus();
+        }
+      };
+
+      // ❓ input 요소의 경우, 텍스트를 작성하고 엔터키를 누르면 자동으로 submit 되는 기능이 디폴트로 있는 거 아니야?
+      // => input 요소 자체에 장착된 기본 기능이 아닌, form 태그 안에 존재할 때만!!
+      // 🤖 보통 <input type="text"> 요소가 💥<form> 태그 안에 들어 있다면💥, Enter 키를 누를 때 기본적으로 form이 자동으로 submit됩니다. 하지만, 지금 코드에서는 input이 <form> 안에 있는 게 아니라 <div> 안에 있기 때문에, Enter 키를 눌러도 자동으로 submit되는 동작이 발생하지 않습니다. 이런 경우 Enter 키를 감지해서 어떤 동작을 수행하려면 keyup 이벤트를 통해 별도로 처리해야 합니다.
+
+      // 엔터 쳤을 때, 호출되는 이벤트
+      const handleAddKeyup = (event) => {
+        if(event.key === 'Enter') handleAdd();
+      }
+
+      // 할일 추가
+      function addItem(title){
+        const item = {
+          no: itemList[itemList.length - 1].no + 1,
+          title,
+          done: false,
+        }
+
+        // TODO: 데이터 갱신하는 작업 (일단 코드 상의 원본 데이터(=itemList)에 변화를 주고, 즉 새롭게 등록된 데이터를 추가(push)하고,)
+        itemList.push(item);
+
+        // TODO: 화면을 갱신 (화면에도 새롭게 추가된 리스트를 추가함으로써 총 두가지 변화를 줘야 한다.)
+        const liElem = getTodoItemElem(item);
+        const todolistElem = document.querySelector('.todolist');
+        todolistElem.appendChild(liElem);
+      }
+
+      // 완료/미완료 처리
+      function toggleDone(no){
+
+      }
+
+      // 할일 삭제
+      function deleteItem(no){
+
+      }
+    </script>
+  </body>
+</html>
