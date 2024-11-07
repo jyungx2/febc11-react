@@ -20,74 +20,33 @@
     </div> -->
     <div id="root"></div>
 
-    <script type="text/javascript">
-      // HEADER
-      // <h1>Counter - JS로 UI 구성</h1>
-      const h1 = document.createElement('h1');
-      const h1Txt = document.createTextNode('Counter - JS로 UI 구성')
-      h1.appendChild(h1Txt);
+    <!-- ✅ 이렇게 src로 가져오면, html을 통쨰로 가져오는 방식 - ES6 나오기 전의 오래된 방식.. 여러 개의 라이브러리를 가져와야 하기 때문에 이렇게 줄줄이 src로 가져오게 되면, 충돌이 발생할 수 있다. src로 가져오는 라이브러리 안에 내가 이미 쓰고 있는 h1이라는 전역변수가 존재할 수도 있기 때문.. => ES6의 모듈이라는 개념이 나오면서 라이브러리의 충돌을 막을 수 있게 되었다. type= module로 선언하면, 무조건 임포트로 가져올 수 밖에 없고, 이렇게 임포트해서 쓰면 코드를 블럭단위로 충돌 나지 않게, 현재 내 전역변수와의 충돌을 일으키지 않고, 각각의 라이브러리 내에서만 변수로 쓸 수 있게 할 수 있다. -->
+    <!-- <script type="text/javascript" src="./yong.js"></script> -->
 
-      // <p>파일 경로: <span id="filepath"></span></p>
-      const spanEl1 = document.createElement('span');
-      spanEl1.setAttribute('id', 'filepath');
+    <script type="module">
+      // ✅ module은 태그의 속성으로 defer을 지정한 것처럼 실행됨
+      // => 이 문제를 해결하기 위한 방법: 임포트할 거라서 module은 꼭 냅둬야 하기 때문에, filepath 코드의 태그의 속성 또한 module로 설정해줘야 한다!
+      // HTML parser, JS engine은 각각 HTML, JS코드를 읽는다.
+      // HTML parser가 <script> 태그를 만나면, 이해하지 못하기 때문에, Parsing하던 거 멈추고, JS 엔진을 불러서 도움을 요청한다.
+      // JS 엔진이 물려받아서 이벤트 처리를 다 끝내면, 다시 html parser가 온다. 이렇게 html, js엔진은 브라우저에서 공존하면서 각자의 작업만 맡아서 실행하게 된다.
+      // 이때 만약에 script태그 내부의 코드가 5초정도의 시간이 걸리면, 이 시간이 지난 후에야 html parser에 의해 나머지 Html 코드가 출력되기 때문에... 이 문제점을 방지하고자, script태그 안에 속성으로 defer나 async를 추가하여 비동기적으로 실행하게 할 수 있다. 근데 이때, type=module로 하면 마치 defer를 써주지 않아도 써준 것처럼, 비동기적으로 실행되기 때문에!!! filepath 코드를 현재 스크립트 다음에 써줬음에도 불구하고, Null이 떠서 에러가 발생한 것..
+      import Yong from './yong.js';
+      // Yong(yong.js 코드)이라는 라이브러리로부터 라이브러리성 함수 사용하기 위해 임포트... (임포트해주는 이유는 html parser가 js코드 이해 못하기 때문..? html코드를 읽지못한다고해서 그랬던것같은데,,,)
 
-      const pEl = document.createElement('p');
-      const pTxt = document.createTextNode('파일 경로: ')
-      pEl.appendChild(pTxt);
-      pEl.appendChild(spanEl1);
-
-      // <header></header>
-      const Header = document.createElement('header');
-      Header.appendChild(h1);
-      Header.appendChild(pEl);
-
-      // COUNTER
-      // <button type="button" onclick="handleDown()">-</button>
-      const downBtn = document.createElement('button');
-      const downBtnTxt = document.createTextNode('-');
-      downBtn.setAttribute('type', 'button');
-      downBtn.setAttribute('onclick', 'handleDown()');
-      downBtn.appendChild(downBtnTxt)
-
-      // <button type="button" onclick="handleReset(event)">0</button>
-      const resetBtn = document.createElement('button');
-      const resetBtnTxt = document.createTextNode('0');
-      resetBtn.setAttribute('type', 'button');
-      resetBtn.setAttribute('onclick', 'handleReset()');
-      resetBtn.appendChild(resetBtnTxt)
-
-      // <button type="button" onclick="handleUp()">+</button>
-      const upBtn = document.createElement('button');
-      const upBtnTxt = document.createTextNode('+');
-      upBtn.setAttribute('type', 'button');
-      upBtn.setAttribute('onclick', 'handleUp()');
-      upBtn.appendChild(upBtnTxt)
-
-      // <span>0</span>
-      const numSpace = document.createElement('span');
-      const number = document.createTextNode('0');
-      numSpace.appendChild(number);
-
-      // <div id="counter"></div>
-      const Counter = document.createElement('div');
-      Counter.setAttribute('id', 'counter');
-
-      Counter.appendChild(downBtn);
-      Counter.appendChild(resetBtn);
-      Counter.appendChild(upBtn);
-      Counter.appendChild(numSpace)
-
-      // APP
-      // <div id="app"></div>
-      const App = document.createElement('div');
-      App.setAttribute('id', 'app');
-      App.appendChild(Header);
-      App.appendChild(Counter);
+      const h1 = Yong.createElement('h1', null, 'Counter - createElement() 라이브러리 사용');
+      const p = Yong.createElement('p', null, '파일 경로: ', Yong.createElement('span', { id: 'filepath' }));
+      const downBtn = Yong.createElement('button', { type: 'button', onclick: 'handleDown()' }, '-');
+      const resetBtn = Yong.createElement('button', { type: 'button', onclick: 'handleReset(event)' }, 0);
+      const upBtn = Yong.createElement('button', { type: 'button', onclick: 'handleUp()' }, '+');
+      const span = Yong.createElement('span', null, 0);
+      const Header = Yong.createElement('header', null, h1, p);
+      const Counter = Yong.createElement('div', { id: 'counter' }, downBtn, resetBtn, upBtn, span);
+      const App = Yong.createElement('div', { id: 'app' }, Header, Counter);
 
       document.getElementById('root').appendChild(App);
     </script>
 
-    <script type="text/javascript">
+    <script type="module">
       document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
     </script>
 
