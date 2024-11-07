@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List App</title>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="todo">
+      <header>
+        <h1>Todo List - jQuery :)</h1>
+        <p>파일 경로: <span id="filepath"></span></p>
+      </header>
+      <div id="main">
+        <div id="container">
+          <ul>
+            <li>
+              <h2>쇼핑 목록</h2>
+              <div class="todoinput">
+                <input type="text" autofocus onkeyup="handleAddKeyup(event)" />
+                <button type="button" onclick="handleAdd()">추가</button>
+              </div>
+              <ul class="todolist">
+                <li>
+                  <span>1</span>
+                  <span><s>샘플1</s></span>
+                  <button type="button">삭제</button>
+                </li>
+                <li>
+                  <span>2</span>
+                  <span>샘플2</span>
+                  <button type="button">삭제</button>
+                </li>
+                <li>
+                  <span>3</span>
+                  <span>샘플3</span>
+                  <button type="button">삭제</button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <footer>
+        <p>멋쟁이 사자처럼 FrontEnd BootCamp</p>
+      </footer>
+    </div>
+
+    <script type="text/javascript">
+      // http://localhost:5500/workspace-ins/ch01-buildup/todolist/sample/
+      // ['http://localhost:5500/workspace-ins/', '/ch01-buildup/todolist/sample/']
+      document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
+
+      // 샘플 목록
+      let itemList = [
+        { no: 1, title: '두부', done: true} ,
+        { no: 2, title: '계란', done: false },
+        { no: 3, title: '라면', done: true },
+      ];
+
+      // 📌 ul 요소 안에 있는 모든 자식 요소를 삭제해라.
+      $('.todolist').children().remove();
+
+      // 기존 목록 삭제
+      // while(todolistElem.firstChild){
+      //   todolistElem.firstChild.remove();
+      // }
+
+      // itemList 배열의 각 Todo 아이템을 화면에 추가
+      itemList.forEach((item, index) =>
+        getTodoItemElem(item).appendTo('.todolist')
+      );
+
+      // 한건의 Todo 객체를 받아서 DOM 객체로 만들어 반환
+      function getTodoItemElem(item){
+        return $(`
+          <li data-no="${item.no}">
+            <span>${item.no}</span>
+            <span onclick="toggleDone(${item.no})">${item.done ? `<s>${item.title}</s>` : item.title }</span>
+            <button type="button" onclick="deleteItem(${item.no})">삭제</button>
+          </li>
+        `);
+      }
+
+      // "추가" 클릭 이벤트 핸들러
+      const handleAdd = () => {
+        const inputElem = $('.todoinput > input');
+        if(inputElem.val().trim() !== ''){
+          addItem(inputElem.val());
+          inputElem.val('').focus();
+        }
+      };
+
+      // 엔터 이벤트 핸들러
+      const handleAddKeyup = (event) => {
+        if(event.key === 'Enter') handleAdd();
+      };
+
+      // 할일 추가
+      function addItem(title){
+        const item = {
+          no: itemList[itemList.length-1].no + 1,
+          title,
+          done: false,
+        };
+
+        // TODO: 데이터 갱신
+        itemList.push(item);
+
+        // TODO: 화면 갱신
+        getTodoItemElem(item).appendTo('.todolist');
+      }
+
+      // 완료/미완료 처리
+      function toggleDone(no){
+        // let selectedItem;
+        // itemList.forEach(item => {
+        //   if(item.no === no){
+        //     selectedItem = item;
+        //   }
+        // });
+
+        // TODO: 데이터 갱신
+        let selectedItem = itemList.find(item => item.no === no);
+        selectedItem.done = !selectedItem.done;
+
+        // TODO: 화면 갱신
+        const selectedLiElem = $(`.todolist > li[data-no="${ no }"]`);
+        selectedLiElem.children('span:last').empty().append(selectedItem.done ? `<s>${selectedItem.title}</s>` : selectedItem.title)
+        // <li>
+        //   <span>2</span>
+        //   <span>샘플2</span>
+        //   <button type="button">삭제</button>
+        // </li>
+      }
+
+      // 할일 삭제
+      function deleteItem(no){
+        // TODO: 데이터 갱신
+        itemList = itemList.filter(item => item.no !== no);
+
+        // TODO: 화면 갱신
+       $(`.todolist > li[data-no="${ no }"]`).remove();
+      }
+    </script>
+  </body>
+</html>
