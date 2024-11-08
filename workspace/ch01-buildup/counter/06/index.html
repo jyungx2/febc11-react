@@ -15,7 +15,7 @@
       function Header() {
         return (
           Yong.createElement('header', null,
-            Yong.createElement('h1', null, 'Counter - createElement() 라이브러리 사용'),
+            Yong.createElement('h1', null, 'Counter - 상태 변경시 자동 리렌더링'),
             Yong.createElement('p', null, '파일 경로: ',
               Yong.createElement('span', { id: 'filepath' }, `ch${document.URL.split('/ch')[1]}index.html`)))
         )
@@ -62,7 +62,7 @@
             Yong.createElement('button', { type: 'button', onclick: handleDown}, '-'),
             Yong.createElement('button', { type: 'button', onclick: (event) => handleReset(event)}, 0),
             Yong.createElement('button', { type: 'button', onclick: handleUp}, '+'),
-            Yong.createElement('span', null, 0))
+            Yong.createElement('span', null, count))
         )
       }
 

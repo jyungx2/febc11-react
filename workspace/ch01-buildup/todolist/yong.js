@@ -16,7 +16,7 @@ const yong = (() => {
     if (props) {
       for (const attrName in props) {
         const value = props[attrName];
-        if (attrName.toLowerCase().startsWith("on")) {
+        if (attrName.startsWith("on")) {
           elem.addEventListener(attrName.toLowerCase().substring(2), value);
         } else {
           elem.setAttribute(attrName, value);
@@ -31,8 +31,11 @@ const yong = (() => {
         child = document.createTextNode(child);
       } else if (typeof child === "function") {
         child = child();
+      } else if (Array.isArray(child)) {
+        child.forEach((c) => elem.appendChild(c));
       }
-      elem.appendChild(child);
+
+      if (!Array.isArray(child)) elem.appendChild(child);
     }
 
     return elem;
@@ -68,8 +71,10 @@ const yong = (() => {
       const oldValue = _stateValue; // 10
       _stateValue = newValue; // 11
 
+      console.log("상태가 변경되지 않음", oldValue, newValue);
       // 두 값이 같은지 비교해서 같지 않을 경우에(상태가 변경된 경우) 리렌더링한다.
       if (!Object.is(oldValue, newValue)) {
+        console.log("상태가 변경됨(리렌더링)", oldValue === newValue);
         _root.render();
       }
     }

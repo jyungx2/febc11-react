@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="module">
+      import yong from '../yong.js';
+
+      // Prop-drilling
+      /*
+            ┌───────── App ──────────┐
+            │           │            │
+          Header       Todo        Footer
+                        │
+                    ┌───┴───┐
+              TodoInput   TodoList
+                            │
+                          TodoItem
+      */
+
+      // 헤더 구성
+      function Header() {
+        return (
+          yong.createElement('header', null,
+          yong.createElement('h1', null, 'Todo List - 컴포넌트 :)'),
+          yong.createElement('p', null, '파일 경로: ',
+            yong.createElement('span', { id: 'filepath' }, `ch${document.URL.split('/ch')[1]}index.html`)))
+        )
+      }
+
+      // 입력창 구성
+      function TodoInput({handleAdd, handleAddKeyup}) {
+        return (yong.createElement('div', { class: 'todoinput' },
+            yong.createElement('input', { type: 'text', autofocus: '', onkeyup: event => handleAddKeyup(event)}),
+            yong.createElement('button', { type: 'button', onclick: handleAdd }, '추가'))
+        )
+      }
+
+      // 할 일 아이템 하나 구성
+      function TodoItem({item, toggleDone, deleteItem}) {
+        // 변수로 따로 할당해줄 필요 없이, props.item자체를 {item}으로 바로 받아와, 굳이
+        // 밑에 코드들에서 일일이 모든 item -> props.item이라고 고칠 필요 없다.
+        // const item = props.item;
+        return (
+        yong.createElement('li', { 'data-no': item.no },
+          yong.createElement('span', null, item.no),
+          yong.createElement('span', { onclick: () => toggleDone(item.no) },
+            item.done? yong.createElement('s', null, item.title) : item.title),
+          yong.createElement('button', { onclick: () => deleteItem(item.no) }, '삭제'))
+        )
+      }
+
+      // 할 일 목록 구성
+      function TodoList(props) {
+        // App 컴포넌트로부터 itemList를 받아오기 위해 props라는 매개변수 생성.
+        const list = props.itemList.map((item) => TodoItem({item, toggleDone: props.toggleDone, deleteItem: props.deleteItem}));
+        return yong.createElement('ul', { class: 'todolist' }, list)
+      }
+
+      // 할 일 구성
+      function Todo(props) {
+        return(yong.createElement('div', { id: 'main' },
+            yong.createElement('div', { id: 'container' },
+            yong.createElement('ul', null,
+            yong.createElement('li', null,
+            yong.createElement('h2', null, '쇼핑 목록'),
+            TodoInput({handleAdd: props.handleAdd, handleAddKeyup: props.handleAddKeyup}),
+            TodoList({itemList: props.itemList, toggleDone: props.toggleDone, deleteItem: props.deleteItem})))))
+        )
+      }
+
+      // 푸터 구성
+      function Footer() {
+        return (yong.createElement('footer', null,
+            yong.createElement('p', null, '멋쟁이 사자처럼 FrontEnd BootCamp')
+          ))
+      }
+
+      // Application 루트 컴포넌트
+      function App(){
+        // 샘플 목록
+        // let itemList = [
+        //   { no: 1, title: '두부', done: true} ,
+        //   { no: 2, title: '계란', done: false },
+        //   { no: 3, title: '라면', done: true },
+        // ];
+
+        const [itemList, setItemList] = yong.useState([
+        { no: 1, title: '두부', done: true} ,
+        { no: 2, title: '계란', done: false },
+        { no: 3, title: '라면', done: true },
+        ]);
+
+        // "추가" 클릭 이벤트 핸들러 (표현식 - 호이스팅 불가 - Todo 변수 내부에서 쓰이기 때문에 그 전에 써준다.)
+        const handleAdd = () => {
+          const inputElem = document.querySelector('.todoinput > input');
+          if(inputElem.value.trim() !== ''){
+            addItem(inputElem.value);
+            inputElem.value = '';
+            inputElem.focus();
+          }
+        };
+
+        // 엔터 이벤트 핸들러 (표현식 - 호이스팅 불가 - 마찬가지의 이유로 맨 위에 써주어야 한다.)
+        const handleAddKeyup = (event) => {
+          if(event.key === 'Enter') handleAdd();
+        };
+
+      // 할일 추가
+      function addItem(title){
+      const item = {
+        no: itemList[itemList.length-1].no + 1,
+        title,
+        done: false,
+      };
+
+        // TODO: 데이터 갱신
+        // 🧩값은 똑같지만 주소가 다르도록 ...을 이용해서 새로운 배열 만들자!
+        // (Primitive data type =/= Reference data type)
+        const newItemList = [...itemList, item];
+        // newItemList.push(item);
+        setItemList(newItemList);
+      }
+
+      // 완료/미완료 처리
+      function toggleDone(no){
+        // TODO: 데이터 갱신
+        const newItemList = [...itemList];
+        // 🧩
+        let selectedItem = newItemList.find(item => item.no === no);
+        selectedItem.done = !selectedItem.done;
+
+        setItemList(newItemList);
+      }
+
+      // 할일 삭제
+      // 두 값(oldValue, newValue)이 같은지 비교해서 같지 않을 경우에 리렌더링한다.
+      // 객체일 때, 같은 메모리 주소를 가지고 있으면 true.
+      // 두 값이 모두 undefined이거나 Null이면 true.
+      // 두 값이 모두 True이거나 false이면 true.
+      // string일 경우, 두 값의 글자수, 순서, 모든 글자가 같으면 true
+      // Number라면, 같은 값을 가지고 있거나 둘 다 NaN이면 true
+      function deleteItem(no){
+        // TODO: 데이터 갱신
+        // 🧩 filter : 자체가 새로운 배열 리턴하기 떄문에 굳이 ...써서 새로운 배열 만들어서 해줄 필요 없다!!
+        // const newItemList = itemList.filter(item => item.no !== no);
+
+        // 🧩 splice : 원본 데이터를 mutation시키고, mutation 후의 원본데이터를 반환 ... itemList(원본데이터)를 유지해야 하기 때문에 newItemList라는 새로운 배열을 만들어 새롭게 반환할(삭제동작 후에 리스트하나를 없앨 것이기 때문에 배열이 바뀔 것..) 어레이를 setItemList()로 화면에 출력!
+        const newItemList = [...itemList];
+        newItemList.splice(itemList.findIndex((item) => item.no === no), 1)
+        setItemList(newItemList);
+
+        // 🚨 만약, ...로 itemLis를 복제해 새로운 배열을 만들지 않고, 그냥 splice로 기존 데이터를 변형시킨다음에 그 배열을 setItemList로 출력시켜도 된다고 생각했을 수 있지만, 그렇게하면 데이터 갱신은 일어났지만, 화면갱신은 일어나지 않게 된다... 왜냐! 리렌더링되는 조건이 애초에 기존 데이터(oldValue)와 새로운 데이터(newValue)가 동일하지 않을 때 일어나는 것이기 때문!
+      }
+
+        return yong.createElement('div', { id: 'todo' }, Header, Todo({handleAdd, handleAddKeyup, itemList, toggleDone, deleteItem}), Footer);
+      }
+
+      yong.createRoot(document.getElementById('root')).render(App);
+    </script>
+  </body>
+</html>
