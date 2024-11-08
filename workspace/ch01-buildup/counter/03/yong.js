@@ -17,8 +17,8 @@ const yong = {
     for (let child of children) {
       if (typeof child === "string" || typeof child === "number") {
         child = document.createTextNode(child);
-        elem.appendChild(child);
       }
+      elem.appendChild(child);
     }
 
     return elem;
