@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>자바스크립트 모듈</title>
-</head>
-<body>
-  <header>
-    <h1>module 예제 :)</h1>
-    <p>파일 경로: <span id="filepath"></span></p>
-  </header>
-  <div id="main">
-    <p>개발자 도구의 콘솔을 확인하세요.</p>
-  </div>
-  <footer>
-    <p>Front-End School 9기</p>
-  </footer>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>자바스크립트 모듈</title>
+  </head>
+  <body>
+    <header>
+      <h1>module 예제 :)</h1>
+      <p>파일 경로: <span id="filepath"></span></p>
+    </header>
+    <div id="main">
+      <p>개발자 도구의 콘솔을 확인하세요.</p>
+    </div>
+    <footer>
+      <p>Front-End School 9기</p>
+    </footer>
 
-  <script type="module">
-    document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
+    <script type="module">
+      document.querySelector('#filepath').textContent = `ch${document.URL.split('/ch')[1]}index.html`;
 
-    
-  </script>
+      // default export(MyMath) VS named export -> 어떻게 export 하냐에 따라 어떻게 import할지도 달라짐!
+      // import MyMath, {plus, minus, avg} from './export.js'
+      import MyMath from './export.js'
+      console.log(MyMath.plus(10, 20));
+      console.log(MyMath.minus(10, 20));
+      console.log(MyMath.avg(10, 20)); // 💥매개변수 > 인자 : 인자 하나(매개변수 math에 대한)가 정의되지 않음 => undefined -> 산술 -> NaN
 
-</body>
+      // import MyMath from './export.js' // MyMath = function multiple()
+      console.log(MyMath.sum(10, 20, 30));
+    </script>
+  </body>
 </html>
