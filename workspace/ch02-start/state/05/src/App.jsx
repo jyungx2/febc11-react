@@ -10,6 +10,7 @@ const emailExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const cellphoneExp = /^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/;
 
 function App() {
+  // 유저의 상태 관리하는 State 시스템
   const [user, setUser] = useState({
     name: "",
     email: "",
