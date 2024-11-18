@@ -14,14 +14,11 @@ function App() {
           // 🍀
           // position.x = event.clientX;
           // position.y = event.clientY;
-
-          const newPosition = { x: event.clientX, y: event.clientY - 80 };
-
-          setPosition(newPosition);
-
-          // 🍀
           // setPosition({ ...position });
           // console.log(position);
+
+          const newPosition = { x: event.clientX, y: event.clientY - 80 };
+          setPosition(newPosition);
         }}
         style={{
           position: "relative",

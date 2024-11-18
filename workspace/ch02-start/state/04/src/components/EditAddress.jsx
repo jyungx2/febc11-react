@@ -10,7 +10,7 @@ export default function EditAddress({ addressBook, handleAddressChange }) {
         <input
           id={address.id}
           type="text"
-          name={address.name}
+          name={address.id}
           value={address.value}
           onChange={handleAddressChange}
         />
