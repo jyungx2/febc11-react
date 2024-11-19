@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+// import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const errorStyle = {
@@ -17,7 +17,12 @@ function App() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues: { name: "", email: "", cellphone: "010" } });
+  } = useForm({
+    mode: "onSubmit", // 최초 검증 시점, ✨default: onSubmit(Submit/Blur/Focus 중에 결정)
+    revalidateMode: "onChange", // 재검증 시점, ✨default: onChange(가장 많이 사용..-> ❓굳이왜필요)
+    criteriaMode: "all", // errors 객체에 첫 오류 하나만 포함하거나(firstError) 전부 포함(all), ✨default: firstError
+    defaultValues: { name: "", email: "", cellphone: "010" },
+  });
 
   // 🔵 useForm의 매개변수로 토스! -> 더이상 필요 없다.
   // const [user, setUser] = useState({
@@ -89,6 +94,7 @@ function App() {
     //   }
     // };
   };
+  console.log(errors);
 
   return (
     <>
@@ -100,10 +106,14 @@ function App() {
           id="name"
           // * register(): id속성은 포함하지 않고, 다음의 4개의 값을 포함하는 객체.
           // 1st: name속성에 대한 값
-          // 2nd: 검증작업에 필요한 속성(규칙)
+          // 2nd: 검증 작업에 필요한 속성(규칙) - 필수입력/최소길이/정규식 패턴
           {...register("name", {
             required: "이름을 입력하세요.",
             minLength: { value: 2, message: "2글자 이상 입력하세요." },
+            pattern: {
+              value: /^[^\d]*$/, // 🫸숫자는 포함할 수 없음.
+              message: "숫자는 입력할 수 없습니다.",
+            },
           })}
           // name="name"
           // value={user.name}
