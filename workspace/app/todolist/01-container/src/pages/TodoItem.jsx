@@ -15,7 +15,7 @@ function TodoItem({ item, toggleDone, deleteItem }) {
 }
 
 // 🖍️propTypes (소문자, 속성명) - PropTypes (대문자, 라이브러리명)
-// TodoItem의 Proptype을 정의하겠다!
+// TodoItem의 proptype이라는 속성을 정의하겠다!
 TodoItem.propTypes = {
   // item: PropTypes.object.isRequired,
   item: PropTypes.shape({
