@@ -3,6 +3,7 @@ import Home from "./Home";
 import Page2 from "./Page2";
 import { useEffect, useState } from "react";
 
+// 라우터 구현 (동작원리 설명 .. 실제로 쓰진 않을 거다!! 이미 누군가에 의해 만들어져 있는 Link 컴포넌트를 쓸 것..)
 function App() {
   const [path, setPath] = useState(window.location.pathname);
   console.log("현재 페이지", path);
@@ -20,6 +21,7 @@ function App() {
     };
   }, []);
 
+  // 위에서 Navigate 이벤트를 이용해 페이지 리렌더링
   return (
     <>
       {(path === "/" || path === "/home.html") && <Home />}
