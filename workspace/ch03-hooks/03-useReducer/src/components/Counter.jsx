@@ -11,6 +11,7 @@ function Counter({ children = "0" }) {
   const initCount = Number(children);
 
   // 🔑 countDispatch: counterReducer 함수를 호출할 수 있는 대리함수 - state 매개변수를 넣어줄 수 없고, useReducer()보고 state를 관리하라고 시킨 상태이므로, counterReducer()를 직접 호출 못하기 때문에 필요 -> 상태 관리를 useReducer()한테 맡기고, 우리는 액션만 전달해주는 꼴!
+  // const [count, setCount] = useState(initCount);
   const [count, countDispatch] = useReducer(counterReducer, initCount);
   const [step, setStep] = useState(1);
 

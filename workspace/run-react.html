@@ -26,7 +26,6 @@
       const filepath = qs.get('filepath');
       document.querySelector('#filepath').textContent = filepath;
       const command = `
-        ${WORKSPACE_DIR.substring(0, 2)}
         cd ${WORKSPACE_DIR}/${filepath}
         npm run dev
       `;
