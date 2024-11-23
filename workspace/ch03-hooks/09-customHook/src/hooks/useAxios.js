@@ -4,7 +4,8 @@ import axios from "axios";
 // ✨ axios 내장 기능 ✨
 axios.defaults.baseURL = "https://todo-api.fesp.shop/api";
 // 1.5초 지나도록 안오면 에러 발생..
-axios.defaults.timeout = 1500;
+// axios.defaults.timeout으로 설정된 1500ms는 클라이언트가 기다릴 수 있는 최대 시간을 설정합니다. 서버 지연 + 네트워크 오버헤드가 1500ms를 초과하면 타임아웃 에러가 발생합니다.
+axios.defaults.timeout = 2500;
 
 // 커스텀훅: 함수의 매개변수에 fetchParams을 넣어준다. (이전에 App.jsx에서는 fetchTodo라는 비동기함수의 매개변수로 넣어줬다.)
 // 팀프로젝트 초기에 만들어놓고 사용하면 굉장히 편하고 효율적!
