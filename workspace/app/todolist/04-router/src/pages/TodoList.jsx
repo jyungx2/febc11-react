@@ -1,9 +1,16 @@
+import { Link } from "react-router-dom";
+
 function TodoList() {
   return (
     <div id="main">
       <h2>할일 목록</h2>
       <div className="todo">
-        <a href="./todoadd.html">추가</a>
+        {/* 절대경로 -> 복잡하지 않은 사이트기 때문에 요거 채택 
+        cf) aaa/bbb/ccc/... 복잡해지면 이렇게 붙여줘야 함 */}
+        <Link to="/add">추가</Link>
+        {/* 상대경로 */}
+        {/* <Link to="add">추가</Link>
+        <Link to="./add">추가</Link> */}
         <br />
         <form className="search">
           <input type="text" autoFocus />
@@ -12,20 +19,20 @@ function TodoList() {
         <ul className="todolist">
           <li>
             <span>1</span>
-            <a href="./tododetail.html">잠자기</a>
-            <a href="./todolist.html">삭제</a>
+            <Link to="/list/1">잠자기</Link>
+            <Link to="/list">삭제</Link>
           </li>
           <li>
             <span>2</span>
-            <a href="./tododetail.html">자바스크립트 복습</a>
-            <a href="./todolist.html">삭제</a>
+            <Link to="/list/2">자바스크립트 복습</Link>
+            <Link to="/list">삭제</Link>
           </li>
           <li>
             <span>3</span>
-            <a href="./tododetail.html">
+            <Link to="/list/3">
               <s>리액트 과제 하기</s>
-            </a>
-            <a href="./todolist.html">삭제</a>
+            </Link>
+            <Link to="/list">삭제</Link>
           </li>
         </ul>
       </div>
