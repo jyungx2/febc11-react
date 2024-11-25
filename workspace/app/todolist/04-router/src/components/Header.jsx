@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Header() {
   return (
@@ -8,14 +8,29 @@ function Header() {
         <div>
           <ul>
             <li>
-              {/* 라우터 쓸거면 <a>, href가 아닌, Link태그와 to속성을 써라 */}
-              <Link to="home">Home</Link>
+              {/* 라우터 쓸거면 <a>, href가 아닌, NavLink태그와 to속성을 써라 */}
+              <NavLink
+                to="home"
+                className={({ isActive }) => (isActive ? "menu-dark" : "menu")}
+              >
+                Home
+              </NavLink>
             </li>
             <li>
-              <Link to="about">About</Link>
+              <NavLink
+                to="about"
+                className={({ isActive }) => (isActive ? "menu-dark" : "menu")}
+              >
+                About
+              </NavLink>
             </li>
             <li>
-              <Link to="list">TodoList</Link>
+              <NavLink
+                to="list"
+                className={({ isActive }) => (isActive ? "menu-dark" : "menu")}
+              >
+                TodoList
+              </NavLink>
             </li>
           </ul>
         </div>

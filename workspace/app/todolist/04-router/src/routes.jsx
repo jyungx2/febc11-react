@@ -6,6 +6,7 @@ import TodoEdit from "@pages/TodoEdit";
 import TodoAdd from "@pages/TodoAdd";
 import TodoDetail from "@pages/TodoDetail";
 import TodoList from "@pages/TodoList";
+import ErrorPage from "@pages/ErrorPage";
 
 const router = createBrowserRouter(
   [
@@ -13,6 +14,7 @@ const router = createBrowserRouter(
       // 로컬호스트/ => <Layout /> 출력
       path: "/",
       element: <Layout />,
+      errorElement: <ErrorPage />,
       // <Layout /> - <Outlet />부분에 칠드런 중 하나 출력
       children: [
         // 로컬호스트(/)까지만 입력하면 아래 Navigate로 지정한 url(to)로 이동해라
@@ -20,7 +22,7 @@ const router = createBrowserRouter(
         { path: "home", element: <Home /> },
         { path: "about", element: <About /> },
         { path: "list", element: <TodoList /> },
-        { path: "add", element: <TodoAdd /> },
+        { path: "list/add", element: <TodoAdd /> },
         { path: "edit", element: <TodoEdit /> },
         { path: "detail", element: <TodoDetail /> },
         // 1️⃣ 동적 세그먼트
