@@ -5,7 +5,9 @@ function TodoAdd() {
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
+    reset,
+    setFocus,
     formState: { errors },
   } = useForm({
     mode: "onSubmit", // 최초 검증 시점, ✨default: onSubmit(Submit/Blur/Focus 중에 결정)
@@ -14,7 +16,38 @@ function TodoAdd() {
     defaultValues: { title: "", content: "" },
   });
 
-  const onSubmit = (item) => {};
+  // ✨ XMLHttpRequest()객체를 이용해 Ajax 통신
+  const onSubmit = (item) => {
+    console.log("서버에 전송", item);
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("POST", "https://todo-api.fesp.shop/api/todolist");
+    xhr.setRequestHeader("Content-Type", "application/json"); // Header : 문자열로 보낼테니까 너가 알아서 parsing해서 써.
+    xhr.responseType = "json"; // xhr.response에 저장되는 응답 데이터가 JSON.parse()의 결과로 저장됨 -> 우리가 따로 Parsing 안해도 됨!
+
+    // 서버로부터 응답이 도착하면 호출되는 함수
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        console.log(xhr.response);
+        alert("할 일이 추가되었습니다.");
+        setFocus("title"); // useRef 대신에 useForm의 속성 setFocus 사용.
+        reset();
+      } else {
+        // 4xx, 5xx
+        // 💥논리적인 에러 (타이틀/내용 모두 필수요건)
+        console.log("서버에서 에러 응답", xhr.status, xhr.response);
+        alert(xhr.response.error?.message || "할 일 추가에 실패했습니다."); // 👉 응답의 에러가 있으면 에러메시지를 보여주고, 없으면 실패했다는 메시지만
+      }
+    };
+
+    // 💥물리적인 에러(네트워크 연결 불가)
+    xhr.onerror = () => {
+      console.error("네트워크 오류");
+      alert("할일 추가에 실패했습니다.");
+    };
+
+    xhr.send(JSON.stringify(item)); // send()의 매개변수: POST형식의 body (JSON형식의 문자로 바꿔서 보낸다!)
+  };
 
   return (
     <div id="main">
