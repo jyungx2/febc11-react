@@ -1,7 +1,9 @@
 import TodoListItem from "@pages/TodoListItem";
 // import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet, useNavigate, useOutletContext } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
+// import useAxios from "../../hooks/useAxios";
+import useAxiosInstance from "../../hooks/useAxiosInstance";
 
 // 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
 // const dummyData = {
@@ -13,6 +15,8 @@ import useFetch from "../../hooks/useFetch";
 // };
 
 function TodoList() {
+  const { item } = useOutletContext();
+  const navigate = useNavigate();
   // const [data, setData] = useState();
   // useEffect(() => {
   //   setData(dummyData);
@@ -20,14 +24,18 @@ function TodoList() {
 
   // API 서버에서 목록 조회 (서버연동 매우 쉬움! ...그 데이터를 어떻게 받아서 쓸지 구현하는게 더 어렵)
   const { data } = useFetch({ url: "/todolist" });
+  const axios = useAxiosInstance();
 
   // 삭제 작업
-  const handleDelete = (_id) => {
+  const handleDelete = async (_id) => {
     try {
       // TODO: API서버에 삭제 요청
+      await axios.delete(`/todolist/${item._id}`);
+
       alert("할일이 삭제 되었습니다.");
 
       // TODO: 목록을 다시 조회
+      navigate(`/list`);
     } catch (err) {
       console.error(err);
       alert("할일 삭제에 실패하였습니다.");
@@ -57,6 +65,7 @@ function TodoList() {
         </form>
         <ul className="todolist">{itemList}</ul>
       </div>
+      <Outlet />
     </div>
   );
 }

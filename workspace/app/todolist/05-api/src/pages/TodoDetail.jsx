@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
+import useAxios from "../../hooks/useAxios";
 
-const dummyData = {
-  item: {
-    _id: 5,
-    title: "Javascript 공부",
-    content: "열심히 하자",
-    done: false,
-    createdAt: "2024.11.21 16:49:00",
-    updatedAt: "2024.11.21 16:49:00",
-  },
-};
+// const dummyData = {
+//   item: {
+//     _id: 5,
+//     title: "Javascript 공부",
+//     content: "열심히 하자",
+//     done: false,
+//     createdAt: "2024.11.21 16:49:00",
+//     updatedAt: "2024.11.21 16:49:00",
+//   },
+// };
 
 function TodoDetail() {
   // ⭐️ URL의 파라미터 추출
@@ -19,13 +20,14 @@ function TodoDetail() {
   const { _id } = useParams();
   console.log(_id);
 
-  const [data, setData] = useState();
+  // const [data, setData] = useState();
 
-  useEffect(() => {
-    // TODO: API 서버 통신
-    // 외부에서 데이터를 받아오는 작업은 함수의 순수성을 잃게 만들어 사이드 이펙트 발생 -> useEffect 안에서 활용 -> '데이타가 있을 경우에만 다음 todo 디브를 보여줘라'(data && ~)기 때문에 todo의 리턴값은 null => 순수함수로 보존o -> useEffect()에서 받아온 데이터는 이미 리턴하고 나서 화면을 렌더링하는 것.
-    setData(dummyData);
-  }, []);
+  // useEffect(() => {
+  //   // TODO: API 서버 통신
+  //   // 외부에서 데이터를 받아오는 작업은 함수의 순수성을 잃게 만들어 사이드 이펙트 발생 -> useEffect 안에서 활용 -> '데이타가 있을 경우에만 다음 todo 디브를 보여줘라'(data && ~)기 때문에 todo의 리턴값은 null => 순수함수로 보존o -> useEffect()에서 받아온 데이터는 이미 리턴하고 나서 화면을 렌더링하는 것.
+  //   setData(dummyData);
+  // }, []);
+  const { data } = useAxios({ url: `/todolist/${_id}` });
 
   return (
     <div id="main">
