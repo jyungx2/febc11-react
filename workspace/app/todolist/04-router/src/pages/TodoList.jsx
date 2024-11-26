@@ -17,9 +17,22 @@ function TodoList() {
     setData(dummyData);
   }, []); // 마운트 된 이후에만 호출 ('.'서버로부터 데이터 받아올 것)
 
+  // 삭제 작업
+  const handleDelete = (_id) => {
+    try {
+      // TODO: API서버에 삭제 요청
+      alert("할일이 삭제 되었습니다.");
+
+      // TODO: 목록을 다시 조회
+    } catch (err) {
+      console.error(err);
+      alert("할일 삭제에 실패하였습니다.");
+    }
+  };
+
   // 최초에는 비어있다가, useEffect에 의해 data = dummyData로 채워짐.
   const itemList = data?.items.map((item) => (
-    <TodoListItem key={item._id} item={item} />
+    <TodoListItem key={item._id} item={item} handleDelete={handleDelete} />
   ));
 
   return (
