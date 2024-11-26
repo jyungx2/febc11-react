@@ -1,16 +1,17 @@
+import useAxios from "@hooks/useAxios";
 import { useEffect, useState } from "react";
-import { Link, Outlet, useOutletContext, useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 
-const dummyData = {
-  item: {
-    "_id": 5,
-    "title": "Javascript 공부",
-    "content": "열심히 하자",
-    "done": false,
-    "createdAt": "2024.11.21 16:49:00",
-    "updatedAt": "2024.11.21 16:49:00"
-  }
-};
+// const dummyData = {
+//   item: {
+//     "_id": 5,
+//     "title": "Javascript 공부",
+//     "content": "열심히 하자",
+//     "done": false,
+//     "createdAt": "2024.11.21 16:49:00",
+//     "updatedAt": "2024.11.21 16:49:00"
+//   }
+// };
 
 function TodoDetail() {
   // URL의 파라미터 추출
@@ -19,13 +20,14 @@ function TodoDetail() {
   const { _id } = useParams();
   console.log(_id);
 
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    // TODO: API 서버 통신
+  // const [data, setData] = useState();
+  // useEffect(() => {
+  //   // TODO: API 서버 통신
     
-    setData(dummyData);
-  }, []);
+  //   setData(dummyData);
+  // }, []);
+
+  const { data } = useAxios({ url: `/todolist/${_id}` });
 
   return (
     <div id="main">
