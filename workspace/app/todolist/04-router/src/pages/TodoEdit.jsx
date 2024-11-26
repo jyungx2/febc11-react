@@ -4,6 +4,8 @@ function TodoEdit() {
   // Outlet 컴포넌트의 context 속성에 전달되는 값 추출
   // ❓ 만약 Layout의 <Outlet/>의 context 속성값도 받고 싶다면, 이경우 부모의 부모이기 때문에 직계부모인 TodoDetail이 context={context}로 넘겨줘야 사용가능하다. 아니면 undefined 출력.
   const { item } = useOutletContext();
+
+  // 프로그래밍 방식으로 페이지 이동에 사용
   const navigate = useNavigate();
 
   // 수정 작업

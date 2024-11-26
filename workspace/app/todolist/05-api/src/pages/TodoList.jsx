@@ -1,9 +1,9 @@
 import TodoListItem from "@pages/TodoListItem";
 // import { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate, useOutletContext } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
-// import useAxios from "../../hooks/useAxios";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
+import { useEffect, useState } from "react";
 
 // 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
 // const dummyData = {
@@ -15,27 +15,37 @@ import useAxiosInstance from "../../hooks/useAxiosInstance";
 // };
 
 function TodoList() {
-  const { item } = useOutletContext();
-  const navigate = useNavigate();
-  // const [data, setData] = useState();
+  // const { item } = useOutletContext();
+  // const navigate = useNavigate();
+  const [data, setData] = useState(); // 🌺
   // useEffect(() => {
   //   setData(dummyData);
   // }, []); // 마운트 된 이후에만 호출 ('.'서버로부터 데이터 받아올 것)
 
   // API 서버에서 목록 조회 (서버연동 매우 쉬움! ...그 데이터를 어떻게 받아서 쓸지 구현하는게 더 어렵)
-  const { data } = useFetch({ url: "/todolist" });
+  // const { data } = useFetch({ url: "/todolist" });
+
+  // 🌺 아이템의 삭제버튼 눌렀을 때 새로고침없이 바로 반영되도록
   const axios = useAxiosInstance();
+  const fetchList = async () => {
+    const res = await axios.get(`/todolist`);
+    setData(res.data);
+  };
+
+  // 🌺 마운트 시에, 데이터 가져와서 보여주긴 해야하니까 빈배열로
+  useEffect(() => {
+    fetchList();
+  }, []);
 
   // 삭제 작업
   const handleDelete = async (_id) => {
     try {
       // TODO: API서버에 삭제 요청
-      await axios.delete(`/todolist/${item._id}`);
-
+      await axios.delete(`/todolist/${_id}`);
       alert("할일이 삭제 되었습니다.");
 
-      // TODO: 목록을 다시 조회
-      navigate(`/list`);
+      // TODO: 목록을 다시 조회 🌺
+      fetchList();
     } catch (err) {
       console.error(err);
       alert("할일 삭제에 실패하였습니다.");

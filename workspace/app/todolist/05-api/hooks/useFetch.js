@@ -6,7 +6,7 @@ const API_SERVER = "https://todo-api.fesp.shop/api";
 // 팀프로젝트 초기에 만들어놓고 사용하면 굉장히 편하고 효율적!
 function useFetch(fetchParams) {
   // 서버로부터 받은 응답 데이터
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
 
   // 에러 메시지
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ function useFetch(fetchParams) {
       console.log(jsonData);
 
       if (jsonData.ok) {
-        setData(jsonData.items);
+        setData(jsonData);
         setError(null);
       } else {
         throw new Error(jsonData.error.message);

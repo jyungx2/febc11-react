@@ -1,6 +1,6 @@
 import TodoListItem from "@pages/TodoListItem";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 // 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
 const dummyData = {
@@ -53,6 +53,8 @@ function TodoList() {
         </form>
         <ul className="todolist">{itemList}</ul>
       </div>
+
+      <Outlet />
     </div>
   );
 }
