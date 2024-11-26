@@ -1,6 +1,27 @@
+import TodoListItem from "@pages/TodoListItem";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+// 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
+const dummyData = {
+  // 서버에서 items라는 속성에 맞춰서 데이터를 보내줄 거니까 ..
+  items: [
+    { _id: 1, title: "잠자기" },
+    { _id: 2, title: "자바스크립트 예습" },
+  ],
+};
+
 function TodoList() {
+  const [data, setData] = useState();
+  useEffect(() => {
+    setData(dummyData);
+  }, []); // 마운트 된 이후에만 호출 ('.'서버로부터 데이터 받아올 것)
+
+  // 최초에는 비어있다가, useEffect에 의해 data = dummyData로 채워짐.
+  const itemList = data?.items.map((item) => (
+    <TodoListItem key={item._id} item={item} />
+  ));
+
   return (
     <div id="main">
       <h2>할일 목록</h2>
@@ -17,25 +38,7 @@ function TodoList() {
           <input type="text" autoFocus />
           <button type="submit">검색</button>
         </form>
-        <ul className="todolist">
-          <li>
-            <span>1</span>
-            <Link to="/list/1">잠자기</Link>
-            <Link to="/list">삭제</Link>
-          </li>
-          <li>
-            <span>2</span>
-            <Link to="/list/2">자바스크립트 복습</Link>
-            <Link to="/list">삭제</Link>
-          </li>
-          <li>
-            <span>3</span>
-            <Link to="/list/3">
-              <s>리액트 과제 하기</s>
-            </Link>
-            <Link to="/list">삭제</Link>
-          </li>
-        </ul>
+        <ul className="todolist">{itemList}</ul>
       </div>
     </div>
   );
