@@ -19,14 +19,20 @@ function TodoAdd() {
   // ✨ XMLHttpRequest()객체를 이용해 Ajax 통신
   const onSubmit = (item) => {
     console.log("서버에 전송", item);
+
+    const timer = setTimeout(() => {
+      xhr.abort(); // 일정시간 지난 뒤,중간에 요청 취소
+    }, 2000);
+
     const xhr = new XMLHttpRequest();
 
-    xhr.open("POST", "https://todo-api.fesp.shop/api/todolist");
+    xhr.open("POST", "https://todo-api.fesp.shop/api/todolist?delay=100000000");
     xhr.setRequestHeader("Content-Type", "application/json"); // Header : 문자열로 보낼테니까 너가 알아서 parsing해서 써.
     xhr.responseType = "json"; // xhr.response에 저장되는 응답 데이터가 JSON.parse()의 결과로 저장됨 -> 우리가 따로 Parsing 안해도 됨!
 
     // 서버로부터 응답이 도착하면 호출되는 함수
     xhr.onload = () => {
+      clearTimeout(timer);
       if (xhr.status >= 200 && xhr.status < 300) {
         console.log(xhr.response);
         alert("할 일이 추가되었습니다.");
@@ -38,6 +44,10 @@ function TodoAdd() {
         console.log("서버에서 에러 응답", xhr.status, xhr.response);
         alert(xhr.response.error?.message || "할 일 추가에 실패했습니다."); // 👉 응답의 에러가 있으면 에러메시지를 보여주고, 없으면 실패했다는 메시지만
       }
+    };
+
+    xhr.onabort = () => {
+      alert("타임 아웃");
     };
 
     // 💥물리적인 에러(네트워크 연결 불가)
