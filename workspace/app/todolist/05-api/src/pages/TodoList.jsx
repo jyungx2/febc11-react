@@ -26,6 +26,7 @@ function TodoList() {
   const params = {
     keyword: searchParams.get("keyword"), // 환승 (검색어 꺼내오기)
     page: searchParams.get("page"), // 페이지
+    limit: 5, // 설정 안하면 10이 디폴트값
   };
   // const { item } = useOutletContext();
   // const navigate = useNavigate();
@@ -89,6 +90,20 @@ function TodoList() {
     setSearchParams(newSearchParams);
   };
 
+  let pageList = [];
+  const current = params.page;
+  // pagination 속성은 항상 있기 때문에 굳이 ? 안붙여도 OK
+  for (let page = 1; page <= data.pagination.totalPages; page++) {
+    searchParams.set("page", page); // page속성을 1.2.3..으로 설정
+    let search = searchParams.toString(); // toString: /list?🪝keyword=환승&page=1/2/3🪝 여기서 ?뒤의 문자열을 꺼내옴 (이때, 키워드까지 다같이 뽑아오는 것!)
+
+    pageList.push(
+      <li className={current === page ? "active" : ""}>
+        <Link to={`/list?${search}`}>{page}</Link>
+      </li>
+    );
+  }
+
   return (
     <div id="main">
       <h2>할일 목록</h2>
@@ -114,17 +129,20 @@ function TodoList() {
         <ul className="todolist">{itemList}</ul>
       </div>
 
-      <ul className="pagination">
-        <li className="active">
-          <Link to={`/list?page=1`}>1</Link>
-        </li>
-        <li>
-          <Link to={`/list?page=2`}>2</Link>
-        </li>
-        <li>
-          <Link to={`/list?page=3`}>3</Link>
-        </li>
-      </ul>
+      <div className="pagination">
+        <ul>
+          <li className="active">
+            <Link to={`/list?page=1`}>1</Link>
+          </li>
+          <li>
+            <Link to={`/list?page=2`}>2</Link>
+          </li>
+          <li>
+            <Link to={`/list?page=3`}>3</Link>
+          </li>
+        </ul>
+      </div>
+
       <Outlet />
     </div>
   );
