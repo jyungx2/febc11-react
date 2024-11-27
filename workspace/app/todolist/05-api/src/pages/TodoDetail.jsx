@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
-import useAxios from "../../hooks/useAxios";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
 
 // const dummyData = {
