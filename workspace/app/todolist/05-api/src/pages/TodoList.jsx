@@ -4,6 +4,7 @@ import { Link, Outlet, useSearchParams } from "react-router-dom";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
 import { useEffect, useRef, useState } from "react";
 import "../Pagination.css";
+import Pagination from "@pages/Pagination";
 
 // 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
 // const dummyData = {
@@ -24,8 +25,9 @@ function TodoList() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const params = {
+    // 🚧 검색어 쳐서 검색한 뒤, 다시 TodoList 눌렀을 때, 검색어가 없어지고 Emptry string으로 나오도록 설정해야 함 rf) 여기서 (|| "") 라고 설정해도 안됨..
     keyword: searchParams.get("keyword"), // 환승 (검색어 꺼내오기)
-    page: searchParams.get("page"), // 페이지
+    page: searchParams.get("page") || 1, // 페이지
     limit: 5, // 설정 안하면 10이 디폴트값
   };
   // const { item } = useOutletContext();
@@ -56,7 +58,7 @@ function TodoList() {
   useEffect(() => {
     // ⚠️ fetchList()안에 매개변수를 쓰면 경고창이 뜸! ⚠️
     fetchList(params);
-  }, [searchParams]); //  ⛱️ 주소창은 검색어에 따라 ?keyword=''이 붙으면서 잘 바뀌는데, 목록창이 안 바뀜!! => []로 해놨기 때문에 마운트(최초 렌더링) 됐을 때만 호출되기 때문, 따라서 검색어가 바뀔 때마다(searchParams) 호출되도록 디펜던시 설정
+  }, [searchParams]); // ⛱️ 주소창은 검색어에 따라 ?keyword=''이 붙으면서 잘 바뀌는데, 목록창이 안 바뀜!! => []로 해놨기 때문에 마운트(최초 렌더링) 됐을 때만 호출되기 때문, 따라서 검색어가 바뀔 때마다(searchParams) 호출되도록 디펜던시 설정
 
   // 삭제 작업
   const handleDelete = async (_id) => {
@@ -90,19 +92,21 @@ function TodoList() {
     setSearchParams(newSearchParams);
   };
 
-  let pageList = [];
-  const current = params.page;
-  // pagination 속성은 항상 있기 때문에 굳이 ? 안붙여도 OK
-  for (let page = 1; page <= data.pagination.totalPages; page++) {
-    searchParams.set("page", page); // page속성을 1.2.3..으로 설정
-    let search = searchParams.toString(); // toString: /list?🪝keyword=환승&page=1/2/3🪝 여기서 ?뒤의 문자열을 꺼내옴 (이때, 키워드까지 다같이 뽑아오는 것!)
+  // let pageList = [];
+  // const current = data?.pagination.page;
 
-    pageList.push(
-      <li className={current === page ? "active" : ""}>
-        <Link to={`/list?${search}`}>{page}</Link>
-      </li>
-    );
-  }
+  // // pagination 속성은 항상 있기 때문에 굳이 ? 안붙여도 OK
+  // // 💥💥data는 붙여라!!💥💥
+  // for (let page = 1; page <= data?.pagination.totalPages; page++) {
+  //   searchParams.set("page", page); // page속성을 1.2.3..으로 설정
+  //   let search = searchParams.toString(); // toString: /list?🪝keyword=환승&page=1/2/3🪝 여기서 ?뒤의 문자열을 꺼내옴 (이때, 키워드까지 다같이 뽑아오는 것!)
+
+  //   pageList.push(
+  //     <li key={page} className={current === page ? "active" : ""}>
+  //       <Link to={`/list?${search}`}>{page}</Link>
+  //     </li>
+  //   );
+  // }
 
   return (
     <div id="main">
@@ -129,19 +133,18 @@ function TodoList() {
         <ul className="todolist">{itemList}</ul>
       </div>
 
-      <div className="pagination">
-        <ul>
-          <li className="active">
-            <Link to={`/list?page=1`}>1</Link>
-          </li>
-          <li>
-            <Link to={`/list?page=2`}>2</Link>
-          </li>
-          <li>
-            <Link to={`/list?page=3`}>3</Link>
-          </li>
-        </ul>
-      </div>
+      {/* <div className="pagination">
+        <ul>{pageList}</ul>
+      </div> */}
+
+      {/* data있다는 전제하에 Pagination 컴포넌트를 불러와야함 ... 불필요한 렌더링 -> && 이용 */}
+      {/* Optional chaining(?): data?.pagination.~이라고 써봤자 해결안됨... ?은 undefined나 null을 만나면 ❌에러❌를 발생시키지 않고, 대신 undefined를 반환 */}
+      {data && (
+        <Pagination
+          totalPages={data.pagination.totalPages}
+          current={data.pagination.page}
+        />
+      )}
 
       <Outlet />
     </div>

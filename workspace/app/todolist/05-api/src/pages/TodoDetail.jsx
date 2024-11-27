@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
 
 // const dummyData = {
@@ -21,6 +21,9 @@ function TodoDetail() {
   console.log(_id);
 
   const [data, setData] = useState(); // 🌼
+
+  // ⛱️ params설정 후, 리스트 하나 클릭하고 나서 목록버튼 눌렀을 때 리셋되는게 아니라, params 그대로 유지된 상태의 페이지로 이동하도록
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   // TODO: API 서버 통신
@@ -59,7 +62,10 @@ function TodoDetail() {
             <Link to="./edit">수정</Link>
             {/* 절대경로 */}
             {/* <Link to=`/list/${id}/edit`>수정</Link> */}
-            <Link to="/list">목록</Link>
+            {/* ⛱️ -1로 써주어 이전 페이지로 돌아가게끔 */}
+            <button type="button" onClick={() => navigate(-1)}>
+              목록
+            </button>
           </div>
 
           {/* 리액트 라우터에서 정의된 부모-자식간의 데이터를 전송하기 위해 쓰는 속성 => context */}
