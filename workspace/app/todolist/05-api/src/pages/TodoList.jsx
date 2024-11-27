@@ -1,8 +1,9 @@
 import TodoListItem from "@pages/TodoListItem";
 // import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import "../Pagination.css";
 
 // 가짜 데이터로 화면 렌더링 테스트(API 서버가 완성될 때까지 기다리지 않고 테스트해보자)
 // const dummyData = {
@@ -14,7 +15,18 @@ import { useEffect, useState } from "react";
 // };
 
 function TodoList() {
+  // ⛱️ useRef를 이용하여 검색창 구현
   const searchRef = useRef("");
+
+  // 쿼리 스트링 정보를 읽거나 설정
+  // /list?keyword=환승&page=3 => new URLSearchParams('keyword=환승&page=3')
+  // 1. 꺼내는 작업할 때의 useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const params = {
+    keyword: searchParams.get("keyword"), // 환승 (검색어 꺼내오기)
+    page: searchParams.get("page"), // 페이지
+  };
   // const { item } = useOutletContext();
   // const navigate = useNavigate();
   const [data, setData] = useState(); // 🌺
@@ -33,16 +45,17 @@ function TodoList() {
   const axios = useAxiosInstance(); // 🌺 useFetch()에서 data(state) 가져오지 않고, useState()를 이용해 자체적으로 상태 관리!(훅의 도움 안받음 - useRef)
 
   // 🖍️ 마운트 직후의 삭제 후에 목록 조회를 해야 하므로 함수 만듦
-  const fetchList = async () => {
-    const res = await axios.get(`/todolist`);
+  //  ⛱️ 인자값에 의해서만 결과가 좌우되도록(함수의 독립성 keep) 매개변수를 설정
+  const fetchList = async (params = {}) => {
+    const res = await axios.get(`/todolist`, { params }); // ⛱️ 두번째는 옵션을 전달 - params: ? 찍고 뒤에 보내는 값 (todolist바로 뒤에 하드코드할 수도 있지만, 여러개의 파라미터가 있을 수도 있끼 때문에 객체로 보낼것임 - keyword(검색어)가 넘어감)
     setData(res.data);
   };
 
   // 🌺 마운트 시에, 데이터 가져와서 보여주긴 해야하니까 빈배열로
   useEffect(() => {
     // ⚠️ fetchList()안에 매개변수를 쓰면 경고창이 뜸! ⚠️
-    fetchList();
-  }, []);
+    fetchList(params);
+  }, [searchParams]); //  ⛱️ 주소창은 검색어에 따라 ?keyword=''이 붙으면서 잘 바뀌는데, 목록창이 안 바뀜!! => []로 해놨기 때문에 마운트(최초 렌더링) 됐을 때만 호출되기 때문, 따라서 검색어가 바뀔 때마다(searchParams) 호출되도록 디펜던시 설정
 
   // 삭제 작업
   const handleDelete = async (_id) => {
@@ -64,7 +77,17 @@ function TodoList() {
     <TodoListItem key={item._id} item={item} handleDelete={handleDelete} />
   ));
 
-  const handleSearch = () => {};
+  // ⛱️
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // current 속성을 거쳐서 !!
+    const inputKeyword = searchRef.current.value;
+    console.log(inputKeyword);
+
+    // 2. 유저가 입력한 값을 키워드값으로 설정하는 작업: URLSearchParams()
+    const newSearchParams = new URLSearchParams(`keyword=${inputKeyword}`);
+    setSearchParams(newSearchParams);
+  };
 
   return (
     <div id="main">
@@ -80,11 +103,28 @@ function TodoList() {
         <br />
         <form className="search" onSubmit={handleSearch}>
           {/* useState vsd useRef */}
-          <input type="text" autoFocus defaultValue={"hello"} />
+          <input
+            type="text"
+            autoFocus
+            defaultValue={params.keyword}
+            ref={searchRef}
+          />
           <button type="submit">검색</button>
         </form>
         <ul className="todolist">{itemList}</ul>
       </div>
+
+      <ul className="pagination">
+        <li className="active">
+          <Link to={`/list?page=1`}>1</Link>
+        </li>
+        <li>
+          <Link to={`/list?page=2`}>2</Link>
+        </li>
+        <li>
+          <Link to={`/list?page=3`}>3</Link>
+        </li>
+      </ul>
       <Outlet />
     </div>
   );
