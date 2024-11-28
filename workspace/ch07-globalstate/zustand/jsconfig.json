@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../recoil/src",
+    "paths": {
+      "@/*": ["/*"],
+      "@components/*": ["../recoil/components/*"],
+      "@pages/*": ["../recoil/pages/*"],
+      "@hooks/*": ["../recoil/hooks/*"],
+      "@context/*": ["../recoil/context/*"],
+      "@redux/*": ["../recoil/redux/*"],
+      "@redux-toolkit/*": ["../recoil/redux-toolkit/*"],
+      "@recoil/*": ["../recoil/recoil/*"],
+      "@zustand/*": ["../recoil/zustand/*"]
+    }
+  }
+}

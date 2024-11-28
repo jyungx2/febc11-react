@@ -14,7 +14,8 @@ function Right3() {
     console.log("      # Right3 렌더링.");
   });
 
-  // CounterContext
+  // CounterContext 구독 -> CounterContext의 상태변경이 Right3의 리렌더링을 유발함
+  // 실질적으로 count라는 값을 가져와서 쓰진 않지만, count 상태를 관리하는 함수를 가져와서 쓰기 때문에 당연히 자동으로 count상태값이 바뀌므로 count값을 꺼내쓰는 Left3도 같이 렌더링됨. count를 쓰지 않아도 어쨌든 같은 객체로 묶였기 때문에 객체가 업데이트된 꼴 -> count 제외 다른 함수들을 꺼내쓰는 Right3 컴포넌트도 리렌더링.
   const {
     actions: { countDown, reset, countUp },
     hello,

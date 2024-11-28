@@ -7,6 +7,7 @@ function Left3() {
     console.log("      # Left3 렌더링.");
   });
 
+  // CounterContext 구독 -> CounterContext의 상태변경이 Left3의 리렌더링을 유발함
   const {
     state: { count },
   } = useContext(CounterContext);
