@@ -1,7 +1,7 @@
 import { COUNTER_ACTION } from "@redux/counterActionCreator";
 
 // 초기 상태
-const initialState = { count: 0 };
+const initialState = { count: 5, hello: "hi" };
 
 // 현재 상태와 action 객체를 받아서 새로운 상태를 반환하는 순수 함수
 // 로직을 컴포넌트 내부에서 직접 구현하지 않고 외부에서 구현
@@ -21,7 +21,10 @@ function counterReducer(state = initialState, action) {
       return { ...state, count: state.count - action.payload.step };
 
     case COUNTER_ACTION.RESET:
-      return { ...state, count: 0 };
+      return { ...state, count: 0, hello: new Date().toString() };
+
+    default:
+      return state;
   }
   // 💥 상태는 불변성을 가져야 하므로 바뀌면 안된다.
   // 속성값만 바로 접근해서 수정하면 불변성 파괴 ... 같은 주소를 가진 객체를 mutation시키는 것
