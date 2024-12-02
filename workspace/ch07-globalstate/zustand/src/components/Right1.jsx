@@ -1,9 +1,9 @@
-import Right2 from "./Right2";
-import { useEffect } from "react";
+import Right2 from '@components/Right2';
+import { useEffect } from 'react';
 
 function Right1() {
-  useEffect(() => {
-    console.log("  # Right1 렌더링.");
+  useEffect(()=>{
+    console.log('  # Right1 렌더링.');
   });
   return (
     <div>

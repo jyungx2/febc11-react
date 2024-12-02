@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": "../recoil/src",
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["/*"],
-      "@components/*": ["../recoil/components/*"],
-      "@pages/*": ["../recoil/pages/*"],
-      "@hooks/*": ["../recoil/hooks/*"],
-      "@context/*": ["../recoil/context/*"],
-      "@redux/*": ["../recoil/redux/*"],
-      "@redux-toolkit/*": ["../recoil/redux-toolkit/*"],
-      "@recoil/*": ["../recoil/recoil/*"],
-      "@zustand/*": ["../recoil/zustand/*"]
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@hooks/*": ["hooks/*"],
+      "@context/*": ["context/*"],
+      "@redux/*": ["redux/*"],
+      "@redux-toolkit/*": ["redux-toolkit/*"],
+      "@recoil/*": ["recoil/*"],
+      "@zustand/*": ["zustand/*"],
     }
   }
 }

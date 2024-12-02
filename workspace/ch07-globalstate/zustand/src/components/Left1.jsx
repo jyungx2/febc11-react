@@ -1,9 +1,9 @@
-import Left2 from "./Left2";
-import { useEffect } from "react";
+import Left2 from '@components/Left2';
+import { useEffect } from 'react';
 
 function Left1() {
-  useEffect(() => {
-    console.log("  # Left1 렌더링.");
+  useEffect(()=>{
+    console.log('  # Left1 렌더링.');
   });
   return (
     <div>
