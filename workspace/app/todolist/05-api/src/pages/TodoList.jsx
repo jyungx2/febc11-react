@@ -125,6 +125,7 @@ function TodoList() {
           <input
             type="text"
             autoFocus
+            // 비제어 컴포넌트로 만들고, useRef훅 사용한 이유:
             defaultValue={params.keyword}
             ref={searchRef}
           />
