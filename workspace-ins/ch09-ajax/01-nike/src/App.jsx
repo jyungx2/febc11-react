@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Product from "./Product";
 import Shipping from "./Shipping";
 
@@ -31,7 +31,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetchData(1); // 3번(마운트 후)
+    fetchData(4); // 3번(마운트 후)
   }, []); // 마운트 된 이후에 최초 한번만 실행
 
   const basicShippingFees = 3000;
