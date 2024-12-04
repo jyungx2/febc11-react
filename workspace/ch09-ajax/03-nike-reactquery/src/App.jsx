@@ -4,7 +4,7 @@ import Shipping from "./Shipping";
 import { DotLoader } from "react-spinners"; // SPINNER
 // import axios from "axios";
 import useAxiosInstance from "../hooks/useAxiosInstance";
-import { Slide, ToastContainer } from "react-toastify";
+import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -69,11 +69,13 @@ function App() {
   // useQuery를 쓰면 chapter 3에서 커스텀 훅(useFetch, useAxios)에서 상태관리를 직접 해주지 않아도, useQuery가 내부적으로 data, isLoading, error를 상태 관리해준다.
 
   // 1️⃣ 상품 상세 조회
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     // 7번 상품
     queryKey: ["product", 7], // 캐시에 사용할 키 값을 지정
     queryFn: () => axios.get(`/products/7`), // Promise를 반환하는 함수 지정(실제로 서버로부터 7번 상품을 조회하는 작업을 여기서 구현) ... Pending - isLoading:true, Resolved - isLoading:false로 속성값이 바뀜, Rejected - error 속성값 발생
     select: (res) => res.data.item, // queryFn의 리턴값을 매개변수(res)로 받아옴으로써, 데이터를 필요한 속성만 딱 꺼내거나 추가하는 식으로 가공..
+    // refetchInterval: 1000 * 3;
+    // staleTime: 1000 * 3;
   });
 
   // 2️⃣ 상품 구매
@@ -99,9 +101,14 @@ function App() {
   const orderProduct = useMutation({
     // useMutation() 반환한 객체의 mutate() 함수(속성)을 호출하면 mutationFn이 호출됨.
     mutationFn: (products) => axios.post(`/orders`, products),
-    onSuccess: () => {},
+    // mutationFn 실행이 정상적으로 완료될 경우
+    onSuccess: () => {
+      toast.success("주문이 완료되었습니다.");
+      refetch(); // useQuery() 반환 객체 내의 속성 중 하나.. 새로운 데이터(남은 수량: data.quantity - data.buyQuantity)로 화면 리렌더링
+    },
+    // mutationFn 실행 중 에러가 발생할 경우
     onError: (err) => {
-      // mutationFn 실행 중 에러가 발생할 경우
+      toast.error();
       console.log(err);
     },
   });
