@@ -21,7 +21,7 @@ function useAxiosInstance() {
     // 요청이 전달되기 전에 필요한 공통 작업 수행
     // console.log(config);
     config.params = {
-      delay: 2000,
+      // delay: 2000, // 💥 딜레이 타임~~~~~~~~~~~~~~~~~~
       ...config.params, // params에 delay속성이 존재하면 그걸로 쓰고, 없으면 전에 써준 2000으로 덮여 씌어지지 않고 남을 것..
     };
     return config;
