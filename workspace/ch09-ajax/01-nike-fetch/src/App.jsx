@@ -17,7 +17,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`https://11.fesp.shop/proddfsd/${_id}`, {
+      const res = await fetch(`https://11.fesp.shop/products/${_id}`, {
         headers: {
           "client-id": "00-nike", // nike DB에 접속해서 작업을 수행하도록..
         },

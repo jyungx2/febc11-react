@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
+import { memo } from "react";
 
-function Shipping({ fees, handlePayment }) {
+const Shipping = memo(function Shipping({ fees, handlePayment }) {
   return (
     <>
       <h2>배송비</h2>
       <div>
-        배송비: {fees.toLocaleString()}원
-        <br />
+        배송비: {fees.toLocaleString()}원<br />
       </div>
       <br />
       <button type="button" onClick={handlePayment}>
@@ -14,11 +14,11 @@ function Shipping({ fees, handlePayment }) {
       </button>
     </>
   );
-}
+});
 
 Shipping.propTypes = {
-  handlePayment: PropTypes.func.isRequired,
   fees: PropTypes.number.isRequired,
+  handlePayment: PropTypes.func.isRequired,
 };
 
 export default Shipping;

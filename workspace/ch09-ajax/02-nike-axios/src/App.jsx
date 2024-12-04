@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import Product from "./Product";
 import Shipping from "./Shipping";
 import { DotLoader } from "react-spinners"; // SPINNER
+// import axios from "axios";
+import useAxiosInstance from "../hooks/useAxiosInstance";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   console.log("App 렌더링"); // 1️⃣
@@ -11,35 +15,38 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const axios = useAxiosInstance();
+
   // 2️⃣
   const fetchData = async (_id) => {
     // SPINNER
     setIsLoading(true);
 
     try {
-      const res = await fetch(`https://11.fesp.shop/proddfsd/${_id}`, {
-        headers: {
-          "client-id": "00-nike", // nike DB에 접속해서 작업을 수행하도록..
-        },
+      const res = await axios.get(`/products/${_id}`, {
+        params: { delay: 1000 },
       });
-      console.log("res", res);
-      const jsonData = await res.json();
-      console.log("jsonData", jsonData);
-      // setData(jsonData.item); // 4️⃣ // 성공하면 setData 호출
-      // setData(null);
 
-      // ✅ HTTP 에러 상태 코드 (예: 404, 500): 네트워크 요청이 성공적으로 전송되고 응답이 왔더라도 HTTP 상태 코드가 에러일 경우, catch가 아닌 then이나 try 내부에서 처리가 필요합니다. 이를 위해 res.ok를 활용해 상태를 확인해야 합니다.
-      if (res.ok) {
-        setData(jsonData.item);
-        setError(null);
-      } else {
-        setError(jsonData);
-        setData(null);
-      }
+      console.log("res", res);
+      // const jsonData = await res.json();
+      // console.log("jsonData", jsonData);
+      setData(res.data.item); // 4️⃣ // 성공하면 setData 호출
+      setError(null);
+
+      // // ✅ HTTP 에러 상태 코드 (예: 404, 500): 네트워크 요청이 성공적으로 전송되고 응답이 왔더라도 HTTP 상태 코드가 에러일 경우, catch가 아닌 then이나 try 내부에서 처리가 필요합니다. 이를 위해 res.ok를 활용해 상태를 확인해야 합니다.
+      // if (res.ok) {
+      //   setData(jsonData.item);
+      //   setError(null);
+      // } else {
+      //   setError(jsonData);
+      //   setData(null);
+      // }
     } catch (err) {
       // ✅ 네트워크 에러 (예: 인터넷 끊김, 서버 다운): 네트워크 자체가 실패하면 fetch는 catch 블록으로 넘어갑니다.
-      console.error(err);
-      setError({ message: "잠시 후 다시 요청하세요." }); // 실패하면 setError 호출
+
+      // 💫 interceptor가 에러 처리 했으므로 굳이 안해도 괜찮.
+      // console.error(err);
+      // setError({ message: "잠시 후 다시 요청하세요." }); // 실패하면 setError 호출
       setData(null);
     } finally {
       // SPINNER
@@ -122,6 +129,19 @@ function App() {
           <Shipping fees={shippingFees} handlePayment={handlePayment} />
         </div>
       )}
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
     </>
   );
 }
