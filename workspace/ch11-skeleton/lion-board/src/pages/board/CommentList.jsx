@@ -1,6 +1,5 @@
 import CommentListItem from "@pages/board/CommentListItem";
 import CommentNew from "@pages/board/CommentNew";
-import { Link } from "react-router-dom";
 
 export default function CommentList() {
   return (
