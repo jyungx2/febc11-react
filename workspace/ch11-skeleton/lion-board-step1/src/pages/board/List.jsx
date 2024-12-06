@@ -1,5 +1,5 @@
 import ListItem from "@pages/board/ListItem";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosInstance from "@hooks/useAxiosInstance";
 
@@ -11,9 +11,16 @@ export default function List() {
 
   const axios = useAxiosInstance();
 
+  const { type } = useParams(); // localhost/:type => type: info
+  // /✨:type✨
+  // localhost/✨info✨ => useParams()의 리턴값 : { type: ✨info✨ }
+  // localhost/✨free✨ => useParams()의 리턴값 : { type: ✨free✨ }
+  // localhost/✨qna✨ => useParams()의 리턴값 : { type: ✨qna✨ }
+
+  // 어떤 파라미터(useParams())가 왔냐에 따라서, url 뒤에 해당 파라미터값을 붙일 수 있다.
   const { data } = useQuery({
     queryKey: ["posts", "brunch"],
-    queryFn: () => axios.get("/posts", { params: { type: "brunch" } }),
+    queryFn: () => axios.get("/posts", { params: { type } }),
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
