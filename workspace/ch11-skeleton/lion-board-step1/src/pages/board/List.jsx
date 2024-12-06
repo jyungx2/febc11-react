@@ -13,14 +13,19 @@ export default function List() {
 
   const { data } = useQuery({
     queryKey: ["posts", "brunch"],
-    queryFn: () => axios.get("/posts", { type: "brunch" }),
+    queryFn: () => axios.get("/posts", { params: { type: "brunch" } }),
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
+  console.log(data);
 
   if (!data) {
     return <div>로딩중...</div>;
   }
+
+  const list = data.item.map((item) => (
+    <ListItem key={item._id} item={item}></ListItem>
+  ));
 
   return (
     <main className="min-w-80 p-10">
@@ -79,9 +84,7 @@ export default function List() {
             </tr>
           </thead>
 
-          <tbody>
-            <ListItem />
-          </tbody>
+          <tbody>{list}</tbody>
         </table>
         <hr />
 

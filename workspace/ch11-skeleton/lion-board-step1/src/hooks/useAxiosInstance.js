@@ -8,7 +8,7 @@ function useAxiosInstance() {
     headers: {
       "Content-Type": "application/json", // request의 데이터 타입
       accept: "application/json", // response의 데이터 타입
-      // "client-id": "00-nike",
+      "client-id": "00-brunch",
     },
   });
 
