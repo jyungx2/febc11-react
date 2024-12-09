@@ -20,7 +20,7 @@ export default function New() {
   // List.jsx에 있는 useQuery부분 복사해옴 + _id 파라미터만 추가
   const { type, _id } = useParams();
 
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const addItem = useMutation({
     mutationFn: (formData) => {
@@ -32,6 +32,7 @@ export default function New() {
       alert("게시물이 등록되었습니다.");
       // navigate(-1); // 한 페이지 뒤로 이동.
       // 현재 페이지 pathname: /free/new
+      queryClient.invalidateQueries(["posts", type]);
       navigate(`/${type}`); // "절대경로" - 앞에 슬래시 하나 붙여서 목록 페이지로 이동하도록..
     },
     onError: (err) => {
