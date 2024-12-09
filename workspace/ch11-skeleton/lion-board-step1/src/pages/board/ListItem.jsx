@@ -17,7 +17,8 @@ export default function ListItem({ item }) {
     <tr className="border-b border-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300 ease-in-out">
       <td className="p-2 text-center">{item._id}</td>
       <td className="p-2 truncate indent-4">
-        <Link to="/info/2" className="cursor-pointer">
+        {/* 절대적인 경로: {`/${item.type}/${item._id}`}로 쓰기보다, 이미 연결한 type뒤에 id만 붙도록 아래와 같이 상대경로로 설정. */}
+        <Link to={`${item._id}`} className="cursor-pointer">
           {item.title}
         </Link>
       </td>

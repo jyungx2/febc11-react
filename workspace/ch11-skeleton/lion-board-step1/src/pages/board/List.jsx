@@ -19,7 +19,7 @@ export default function List() {
 
   // 어떤 파라미터(useParams())가 왔냐에 따라서, url 뒤에 해당 파라미터값을 붙일 수 있다.
   const { data } = useQuery({
-    queryKey: ["posts", "brunch"],
+    queryKey: ["posts", type],
     queryFn: () => axios.get("/posts", { params: { type } }),
     select: (res) => res.data,
     staleTime: 1000 * 10,
