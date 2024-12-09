@@ -14,6 +14,7 @@ export default function Signup() {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm();
 
   const axios = useAxiosInstance();
@@ -39,11 +40,19 @@ export default function Signup() {
 
       // 📩 에러메시지 출력
       // 특정 인풋요소의 유효성 실패 || 일반적인 오류('잘못된 값이 있습니다') || 잠시후 다시 요청하세요(서버 또는 네트워크 오류)
-      alert(
-        err.response?.data.errors?.[0].msg ||
-          err.response?.data.message ||
-          "잠시 후 다시 요청하세요."
-      );
+      // => 이렇게 alert로 단순하게 에러를 알려주는 것보다, 입력 필드 바로 아래에 나타내주는 것이 UX친화적!! => useForm의 'setError' 속성 사용
+      if (err.response?.data.errors) {
+        err.response?.data.errors.forEach((error) =>
+          // setError함수를 이용해 에러 객체를 만들어서 입력 필드 바로 아래에 오류 메시지가 뜨도록.. (key, value를 각각 이런 식으로 설정)
+          setError(error.path, { message: error.msg })
+        );
+      } else {
+        alert(
+          err.response?.data.errors?.[0].msg ||
+            err.response?.data.message ||
+            "잠시 후 다시 요청하세요."
+        );
+      }
     },
   });
 
