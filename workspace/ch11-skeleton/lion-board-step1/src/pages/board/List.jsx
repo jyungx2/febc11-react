@@ -58,7 +58,8 @@ export default function List() {
         </form>
 
         <Link
-          to="/info/new"
+          // 상대경로 : to="new"로 해줘도 밑에꺼랑 동일한 결과.
+          to={`/${type}/new`}
           className="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
         >
           글작성
