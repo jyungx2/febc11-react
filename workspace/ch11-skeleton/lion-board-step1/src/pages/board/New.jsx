@@ -1,10 +1,13 @@
 import useAxiosInstance from "@hooks/useAxiosInstance";
-import { useMutation } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InputError from "@components/InputError";
 
 export default function New() {
+  // ✅ useNavigate() 훅 사용해 페이지 이동!
+  const navigate = useNavigate();
+
   // ✅ useState 대신, useForm 훅을 이용한 인풋 데이터 처리
   // 다음 register, handleSubmit, formState속성은 필수값!
   const {
@@ -17,11 +20,23 @@ export default function New() {
   // List.jsx에 있는 useQuery부분 복사해옴 + _id 파라미터만 추가
   const { type, _id } = useParams();
 
+  // const queryClient = useQueryClient();
+
   const addItem = useMutation({
-    // queryKey: ["posts", _id],
-    mutationFn: () => axios.get(`/posts/${_id}`),
-    select: (res) => res.data,
-    staleTime: 1000 * 10,
+    mutationFn: (formData) => {
+      // ✅ 사용자가 입력한 값(input요소에서 받아온 값) + type 속성까지 더해서 서버로 등록요청 보내야 한다.
+      formData.type = type;
+      return axios.get(`/posts`, formData);
+    },
+    onSuccess: () => {
+      alert("게시물이 등록되었습니다.");
+      // navigate(-1); // 한 페이지 뒤로 이동.
+      // 현재 페이지 pathname: /free/new
+      navigate(`/${type}`); // "절대경로" - 앞에 슬래시 하나 붙여서 목록 페이지로 이동하도록..
+    },
+    onError: (err) => {
+      console.error(err);
+    },
   });
 
   return (
