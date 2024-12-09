@@ -19,6 +19,7 @@ export default function List() {
 
   // 어떤 파라미터(useParams())가 왔냐에 따라서, url 뒤에 해당 파라미터값을 붙일 수 있다.
   const { data } = useQuery({
+    // 💥💥여기서 만약 type대신에, 'brunch'라고 하드코딩하면, 정보공유/자유게시판을 눌러도 브런치스토리에 대한 리스트가 나온다..❓
     queryKey: ["posts", type],
     queryFn: () => axios.get("/posts", { params: { type } }),
     select: (res) => res.data,
