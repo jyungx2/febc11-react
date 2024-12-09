@@ -3,8 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosInstance from "@hooks/useAxiosInstance";
 
-// function fetchPosts() {}
-
 export default function List() {
   // 🖍️error -> toast로 보여주자
   // 🖍️isLoading -> suspense로 처리하자

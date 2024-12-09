@@ -26,7 +26,7 @@ export default function New() {
     mutationFn: (formData) => {
       // ✅ 사용자가 입력한 값(input요소에서 받아온 값) + type 속성까지 더해서 서버로 등록요청 보내야 한다.
       formData.type = type;
-      return axios.get(`/posts`, formData);
+      return axios.post(`/posts`, formData);
     },
     onSuccess: () => {
       alert("게시물이 등록되었습니다.");
