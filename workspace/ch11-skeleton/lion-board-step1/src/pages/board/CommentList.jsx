@@ -11,6 +11,7 @@ CommentList.propTypes = {
 };
 
 export default function CommentList({ data = [] }) {
+  console.log(data); // 댓글 객체들의 배열 확인 가능.
   const list = data.map((item) => (
     <CommentListItem key={item._id} item={item} />
   ));

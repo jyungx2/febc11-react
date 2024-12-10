@@ -20,16 +20,39 @@ export default function Signup() {
   const axios = useAxiosInstance();
 
   const addUser = useMutation({
-    mutationFn: (formData) => {
-      // ✅ 사용자가 입력한 값(input요소에서 받아온 값) + type 속성까지 더해서 서버로 등록요청 보내야 한다.
-      // 아래처럼 body라는 새로운객체를 직접 생성해 formData대신 넘겨줘도 오케이.. 근데 굳이 그럴 필욘 없지.
-      // const body = {
-      //   name: formData.name,
-      //   email: formData.email,
-      //   password: formData.password,
-      // };
-      formData.type = "user"; // type을 구분해야 에러 메시지 발생 x (user - 구매자 / seller - 판매자) .. 하드코딩해도 ㄱㅊ
-      return axios.post(`/users`, formData);
+    mutationFn: async (userInfo) => {
+      console.log("initial: ", userInfo); // name, email, password 정보가 담긴 객체
+      // 이미지 먼저 업로드
+      if (userInfo.attach.length > 0) {
+        // 이미지 전송을 위한 폼데이터 생성 => JSON문자열이 아니기 때문에, FormData라는 객체를 생성하여 여기다 유저가 추가한 이미지 파일을 담아서 서버에게 보내야한다.
+        // 서버는 이 폼데이타를 읽기 위해 content-type: 'multipart'라는 값을 필요로 하기 때문에 아래 headers 부분에 저렇게 보내줘야 한다.
+        const imageFormData = new FormData();
+        // API 서버가 요구한대로 attach라는 이름으로 업로드할 파일을 body에 넣어 보내야 하기 때문에 'attach'라는 키로 저장한다.
+        imageFormData.append("attach", userInfo.attach[0]);
+
+        // post를 붙이면 두번쨰를 바디로, 세번째를 Option으로 인식하므로, (첫번째는 무조건 요청보낼 Url경로) 그냥 axios만 불러줄 것이다.. 세번째에 바디를 넣고 싶다면,,
+        const fileRes = await axios("/files", {
+          method: "post",
+          headers: {
+            // **파일 업로드시 필요한 설정**
+            // 우리는 더이상 브라우저 > 서버에게 ❌"JSON 형식"의 텍스트를 보낼거야 라고 설정하지 않고❌
+            // 여기서 우린 텍스트가 아니라, 파일(binary data)을 전송하려면 content-type에 이런식으로 Multipart라고 해야, 서버가 binary data(문자열로 해석할수 없는, 2진수로 되어있는 형식의 데이터)라고 인식하여 저장가능...
+            // 이미 headers속성이 세팅돼 있는 AxiosInstance상에 부르고 있지만, 다음 content-type으로 덮어씌우기!
+            "Content-Type": "multipart/form-data",
+          },
+          // JSON문자열은 그냥 그대로 날것의 formData 객체 형태를 보낼 수 있었지만, 이미지파일과 같은 이진수로 되어있는 Binary file은 data속성으로 보내줘야 한다!
+          data: imageFormData,
+        });
+        // 최종적으로 유저가 등록한 이미지 정보는 image라는 속성 이름으로 저장
+        userInfo.image = fileRes.data.item[0];
+        // attach는 유저가 입력한 정보로부터 이미지 정보를 빼내기 위해 일시적으로 사용한 키..
+        delete userInfo.attach;
+      }
+
+      // userInfo: name, email, password 정보가 담긴 객체
+      userInfo.type = "user"; // type(user/seller)을 구분해야 에러 메시지 발생 x
+      console.log("final: ", userInfo);
+      return axios.post(`/users`, userInfo);
     },
     onSuccess: () => {
       alert("회원가입 완료");

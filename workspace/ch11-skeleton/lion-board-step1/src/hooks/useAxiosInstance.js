@@ -14,9 +14,9 @@ function useAxiosInstance() {
 
   // 🚧 요청 인터셉터 추가하기
   instance.interceptors.request.use((config) => {
-    // config.headers[
-    //   "Authorization"
-    // ] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjM4LCJ0eXBlIjoidXNlciIsIm5hbWUiOiLsl6zrpoQiLCJlbWFpbCI6Inllb3JldW0yMUBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJlbWFpbCIsImlhdCI6MTczMzcyNTU5MSwiZXhwIjoxNzMzODExOTkxLCJpc3MiOiJGRVNQIn0.NzsZgAKXFKYQpQhfrKJFDRdU6mpwmrFmngKDu4uDiz8`;
+    config.headers[
+      "Authorization"
+    ] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEwMSwidHlwZSI6InVzZXIiLCJuYW1lIjoi7J207KeA7JiBIiwiZW1haWwiOiJqLmxlZTEzQGdtYWlsLmNvbSIsImltYWdlIjp7Im9yaWdpbmFsbmFtZSI6Iktha2FvVGFsa19QaG90b18yMDI0LTEwLTE3LTIxLTIzLTUyLnBuZyIsIm5hbWUiOiJsYWx5ZVVkbUgucG5nIiwicGF0aCI6Ii9maWxlcy8wMC1icnVuY2gvbGFseWVVZG1ILnBuZyJ9LCJsb2dpblR5cGUiOiJlbWFpbCIsImlhdCI6MTczMzgwNjk1OCwiZXhwIjoxNzMzODkzMzU4LCJpc3MiOiJGRVNQIn0.YaoubF2jn8kD8hJsMEDuu30fc5aKPzo_TSU59TrM3Hk`;
 
     // 요청이 전달되기 전에 필요한 공통 작업 수행
     // console.log(config);

@@ -1,13 +1,15 @@
 import useAxiosInstance from "@hooks/useAxiosInstance";
 import CommentList from "@pages/board/CommentList";
-import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function Detail() {
   // 🖍️error -> toast로 보여주자
   // 🖍️isLoading -> suspense로 처리하자
 
   const axios = useAxiosInstance();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // List.jsx에 있는 useQuery부분 복사해옴 + _id 파라미터만 추가
   const { type, _id } = useParams(); // localhost/:type => type: info
@@ -25,6 +27,21 @@ export default function Detail() {
   });
   console.log(data);
 
+  const removeItem = useMutation({
+    mutationFn: (_id) => axios.delete(`/posts/${_id}`),
+    onSuccess: () => {
+      alert("게시물이 삭제되었습니다.");
+      // 현재 페이지 pathname: /free/:_id
+      queryClient.invalidateQueries({ queryKey: ["posts", type] });
+      navigate(`/${type}`);
+    },
+  });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    removeItem.mutate(_id);
+  };
+
   if (!data) {
     return <div>로딩중...</div>;
   }
@@ -32,7 +49,7 @@ export default function Detail() {
   return (
     <main className="container mx-auto mt-4 px-4">
       <section className="mb-8 p-4">
-        <form action="/info">
+        <form onSubmit={onSubmit}>
           <div className="font-semibold text-xl">제목 : {data.item.title}</div>
           <div className="text-right text-gray-400">
             작성자 : {data.item.user.name}
