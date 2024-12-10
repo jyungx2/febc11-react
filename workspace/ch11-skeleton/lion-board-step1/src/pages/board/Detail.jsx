@@ -1,24 +1,19 @@
 import useAxiosInstance from "@hooks/useAxiosInstance";
 import CommentList from "@pages/board/CommentList";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useUserStore from "@zustand/userStore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function Detail() {
+  const { user } = useUserStore();
   // 🖍️error -> toast로 보여주자
   // 🖍️isLoading -> suspense로 처리하자
 
   const axios = useAxiosInstance();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { type, _id } = useParams();
 
-  // List.jsx에 있는 useQuery부분 복사해옴 + _id 파라미터만 추가
-  const { type, _id } = useParams(); // localhost/:type => type: info
-  // /✨:type✨
-  // localhost/✨info✨ => useParams()의 리턴값 : { type: ✨info✨ }
-  // localhost/✨free✨ => useParams()의 리턴값 : { type: ✨free✨ }
-  // localhost/✨qna✨ => useParams()의 리턴값 : { type: ✨qna✨ }
-
-  // 어떤 파라미터(useParams())가 왔냐에 따라서, url 뒤에 해당 파라미터값을 붙일 수 있다.
   const { data } = useQuery({
     queryKey: ["posts", _id], // CommentNew에서 댓글 업데이트할 때 staleTime을 거스르고 쿼리를 무효화시킬 때 필요한 key 배열
     queryFn: () => axios.get(`/posts/${_id}`, { params: { type } }),
@@ -70,19 +65,24 @@ export default function Detail() {
             >
               목록
             </Link>
-            <Link
-              // 수정으로 가는 링크: 절대경로로 수정
-              to={`/${type}/${_id}/edit`}
-              className="bg-gray-900 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
-            >
-              수정
-            </Link>
-            <button
-              type="submit"
-              className="bg-red-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
-            >
-              삭제
-            </button>
+
+            {user?._id === data.item.user._id && (
+              <>
+                <Link
+                  // 수정으로 가는 링크: 절대경로로 수정
+                  to={`/${type}/${_id}/edit`}
+                  className="bg-gray-900 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
+                >
+                  수정
+                </Link>
+                <button
+                  type="submit"
+                  className="bg-red-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
+                >
+                  삭제
+                </button>
+              </>
+            )}
           </div>
         </form>
       </section>

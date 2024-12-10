@@ -1,7 +1,9 @@
 // 호출한 후에 통신하는 코드를 따로 작성
+import useUserStore from "@zustand/userStore";
 import axios from "axios";
 
 function useAxiosInstance() {
+  const { user } = useUserStore();
   const instance = axios.create({
     baseURL: "https://11.fesp.shop",
     timeout: 1000 * 15, // 15초 지나면 API 요청 정상적으로 설정해도 에러 발생
@@ -14,9 +16,9 @@ function useAxiosInstance() {
 
   // 🚧 요청 인터셉터 추가하기
   instance.interceptors.request.use((config) => {
-    config.headers[
-      "Authorization"
-    ] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEwMSwidHlwZSI6InVzZXIiLCJuYW1lIjoi7J207KeA7JiBIiwiZW1haWwiOiJqLmxlZTEzQGdtYWlsLmNvbSIsImltYWdlIjp7Im9yaWdpbmFsbmFtZSI6Iktha2FvVGFsa19QaG90b18yMDI0LTEwLTE3LTIxLTIzLTUyLnBuZyIsIm5hbWUiOiJsYWx5ZVVkbUgucG5nIiwicGF0aCI6Ii9maWxlcy8wMC1icnVuY2gvbGFseWVVZG1ILnBuZyJ9LCJsb2dpblR5cGUiOiJlbWFpbCIsImlhdCI6MTczMzgwNjk1OCwiZXhwIjoxNzMzODkzMzU4LCJpc3MiOiJGRVNQIn0.YaoubF2jn8kD8hJsMEDuu30fc5aKPzo_TSU59TrM3Hk`;
+    if (user) {
+      config.headers["Authorization"] = `Bearer ${user.accessToken}`;
+    }
 
     // 요청이 전달되기 전에 필요한 공통 작업 수행
     // console.log(config);

@@ -1,14 +1,14 @@
 import InputError from "@components/InputError";
 import useAxiosInstance from "@hooks/useAxiosInstance";
 import { useMutation } from "@tanstack/react-query";
-import useUserState from "@zustand/userStore";
-import { use } from "react";
+import useUserStore from "@zustand/userStore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   // zustand이 관리하고 있는 store으로부터 상태값을 변경하는 setUser함수만 가져옴
-  const { setUser } = useUserState((store) => store.setUser);
+  // const { setUser } = useUserState();
+  const setUser = useUserStore((store) => store.setUser);
 
   // ✅ useNavigate() 훅 사용해 페이지 이동!
   const navigate = useNavigate();
