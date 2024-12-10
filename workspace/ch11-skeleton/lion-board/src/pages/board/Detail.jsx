@@ -1,6 +1,7 @@
 import CommentList from "@pages/board/CommentList";
 import { Link } from "react-router-dom";
 
+// ✅ Detail - CommentList / CommentListItem / CommentNew 세분화
 export default function Detail() {
   return (
     <main className="container mx-auto mt-4 px-4">

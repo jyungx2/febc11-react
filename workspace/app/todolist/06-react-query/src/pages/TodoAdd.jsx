@@ -25,12 +25,12 @@ function TodoAdd() {
   // 💫 밑에 form요소의 handleSubmit()의 매개변수로서 onSubmit 대신에 쓰일 함수..
   const addItem = useMutation({
     mutationFn: (item) => {
-      axios.post("/todolist", item);
+      axios.post("/todolist/", item);
     }, // onSubmit()이 item을 받기 때문에 얘도 item 받아야지.
     onSuccess: () => {
       alert("할일이 추가 되었습니다.");
       // 지정한 키의 쿼리의 '캐시'를 무효화
-      queryClient.invalidateQueries(["todolist"]);
+      queryClient.invalidateQueries({ queryKey: ["todolist"] });
       // 할 일 목록으로 이동
       navigate(-1);
     },
@@ -40,6 +40,7 @@ function TodoAdd() {
     },
   });
 
+  /*
   // handleSubmit에서 검증을 통과할 경우 호출됨
   const onSubmit = (item) => {
     console.log("서버에 전송", item);
@@ -80,6 +81,7 @@ function TodoAdd() {
 
     xhr.send(JSON.stringify(item));
   };
+  */
 
   return (
     <div id="main">

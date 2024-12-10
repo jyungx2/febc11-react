@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
+import { useQuery } from "@tanstack/react-query";
 
 // const dummyData = {
 //   item: {
@@ -19,37 +20,37 @@ function TodoDetail() {
   // URL이 list/3일 때 useParams()는 {_id: 3}을 반환
   const { _id } = useParams();
   console.log(_id);
+  console.log(useParams()); // {_id: '563'}
 
-  const [data, setData] = useState(); // 🌼
+  const axios = useAxiosInstance();
+  const { data, isLoading } = useQuery({
+    queryKey: ["todolist", _id],
+    queryFn: () => axios.get(`todolist/${_id}`),
+    select: (res) => res.data, // res 통째로 꺼내쓸 경우엔 굳이 안 써도 되는 코드.
+    staleTime: 1000 * 6,
+  });
 
   // ⛱️ params설정 후, 리스트 하나 클릭하고 나서 목록버튼 눌렀을 때 리셋되는게 아니라, params 그대로 유지된 상태의 페이지로 이동하도록
   const navigate = useNavigate();
 
+  // const [data, setData] = useState(); // 🌼
+
+  // 🌼
+  // // API 서버에서 상세정보를 조회
+  // const fetchDetail = async () => {
+  //   const res = await axios.get(`/todolist/${_id}`);
+  //   setData(res.data); // 🌼
+  // };
+
+  // 🌼
   // useEffect(() => {
-  //   // TODO: API 서버 통신
-  //   // 외부에서 데이터를 받아오는 작업은 함수의 순수성을 잃게 만들어 사이드 이펙트 발생 -> useEffect 안에서 활용 -> '데이타가 있을 경우에만 다음 todo 디브를 보여줘라'(data && ~)기 때문에 todo의 리턴값은 null => 순수함수로 보존o -> useEffect()에서 받아온 데이터는 이미 리턴하고 나서 화면을 렌더링하는 것.
-  //   setData(dummyData);
+  //   fetchDetail();
   // }, []);
-
-  // const { data } = useAxios({ url: `/todolist/${_id}` }); // 🌼
-
-  // 🌼
-  const axios = useAxiosInstance();
-  // API 서버에서 상세정보를 조회
-  const fetchDetail = async () => {
-    const res = await axios.get(`/todolist/${_id}`);
-    setData(res.data); // 🌼
-  };
-
-  // 🌼
-  useEffect(() => {
-    fetchDetail();
-  }, []); // 최초에 마운트 될 때만 딱 한번만 호출, 그렇다고 해서 fetchDatail()가 평생 한번만 호출될 수 있는게 아니다.. => 최초에 뭐라도 보여줘야 하니까 일단 보여주고,(이미 데이터 받아와서 화면 리렌더링 됐는데 이걸 또 호출하면 무한 루프에 빠질 것..)
-  // 그리고 나중에 수정한 다음에 수정버튼 눌렀을 때, fetchDetail()이 호출되어야 하므로, TodoEdit에서 refetch(=fetchDetail)을 호출. ('.'아래에 refetch로 넘겨줌)
 
   return (
     <div id="main">
       <h2>할일 상세 보기</h2>
+      {isLoading && <div>로딩중...</div>}
       {data && (
         <>
           <div className="todo">
@@ -70,7 +71,7 @@ function TodoDetail() {
 
           {/* 리액트 라우터에서 정의된 부모-자식간의 데이터를 전송하기 위해 쓰는 속성 => context */}
           {/* ❓❓❓❓❓❓이거 왜 <>안에 넣어야하는지..item이 왜 언디파인드될수있는지..이방법 아니면 왜 위에서 item?이라고 써줘도 해결되는지.. */}
-          <Outlet context={{ item: data.item, refetch: fetchDetail }} />
+          <Outlet context={{ item: data.item }} />
         </>
       )}
     </div>

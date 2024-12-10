@@ -1,13 +1,14 @@
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import useAxios from "../../hooks/useAxios";
-import axios from "axios";
+// import useAxios from "../../hooks/useAxios";
+// import axios from "axios";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
 import { useForm } from "react-hook-form";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 function TodoEdit() {
   // Outlet 컴포넌트의 context 속성에 전달되는 값 추출
   // ❓ 만약 Layout의 <Outlet/>의 context 속성값도 받고 싶다면, 이경우 부모의 부모이기 때문에 직계부모인 TodoDetail이 context={context}로 넘겨줘야 사용가능하다. 아니면 undefined 출력.
-  const { item, refetch } = useOutletContext();
+  const { item } = useOutletContext();
   const navigate = useNavigate();
 
   const {
@@ -25,6 +26,28 @@ function TodoEdit() {
   // axios 인스턴스
   const axios = useAxiosInstance();
 
+  // ✨ 목록 조회에 대한 모든 작업을 무효화 ... 사용자가 글을 추가하면, 해당 글은 목록으로 돌아갔을 때 무조건 바로 나와야 하므로 이전 캐시들을 다 무효화시키고, 다시 업데이트되어 리렌더링되도록..
+  const queryClient = useQueryClient();
+  console.log(item);
+
+  const editItem = useMutation({
+    mutationFn: (formData) => {
+      axios.patch(`/todolist/${item._id}`, formData);
+    },
+    onSuccess: () => {
+      alert("할 일이 수정되었습니다.");
+      // 지정한 키의 쿼리의 '캐시'를 무효화 => Refetch 대신에 쓸 수 있음.
+      queryClient.invalidateQueries({ queryKey: ["todolist", item._id] }); // ✨
+      // 상세보기로 이동
+      navigate(-1);
+    },
+    onError: (err) => {
+      console.error("서버에서 에러 응답 - edit");
+      alert(err?.message || "할 일 수정에 실패했습니다.");
+    },
+  });
+
+  /*
   // 수정 작업
   const onSubmit = async (formData) => {
     try {
@@ -57,12 +80,13 @@ function TodoEdit() {
       alert("할일 수정에 실패하였습니다.");
     }
   };
+  */
 
   return (
     <>
       <h2>할일 수정</h2>
       <div className="todo">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(editItem.mutate)}>
           {/* defaultValue,Chekced: 원래 HTML 요소의 속성을 설정 .. 그냥 value로 하면 state값을 이용해 제어 컴포넌트로 만들어져 이 상태값을 꺼낼라면 onChange라는 함수가 필요한데, 안써주면 에러 나므로. */}
           <label htmlFor="title">제목 :</label>
           <input

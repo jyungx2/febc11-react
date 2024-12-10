@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+// ✅ useForm
+// useForm의 옵션은 폼 검증과 상태 업데이트의 타이밍을 결정
 function TodoAdd() {
   const {
     register,
@@ -76,6 +78,8 @@ function TodoAdd() {
           <div className="input-error">{errors.title?.message}</div>
           <br />
           <label htmlFor="content">내용 :</label>
+          {/* id는 HTML 요소의 식별자일 뿐이고, register의 name이 데이터를 구분하는
+          역할(defaultValues와도 연결되어 초기값을 설정하거나, 폼 제출 시 데이터를 구분하는 키로 사용됨) */}
           <textarea
             id="content"
             cols="23"
@@ -83,6 +87,12 @@ function TodoAdd() {
             {...register("content", {
               required: "내용을 입력하세요",
             })}
+            // <input
+            //   name="content"🌟 -> 1st parameter
+            //   onChange={someFunction}
+            //   onBlur={anotherFunction}
+            //   ref={refCallback}
+            // />
           />
           <div className="input-error">{errors.content?.message}</div>
           <br />

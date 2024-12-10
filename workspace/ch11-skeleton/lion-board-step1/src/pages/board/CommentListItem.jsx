@@ -6,10 +6,11 @@ CommentListItem.propTypes = {
     _id: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }),
+      name: PropTypes.string,
+      image: PropTypes.string,
+    }).isRequired,
     createdAt: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
 };
 
 export default function CommentListItem({ item }) {
@@ -19,12 +20,13 @@ export default function CommentListItem({ item }) {
         <img
           className="w-8 mr-2 rounded-full"
           src="https://api.fesp.shop/files/00-sample/user-muzi.webp"
-          alt="어피치 프로필 이미지"
+          alt={`${item.user.name} 프로필 이미지`}
         />
         <Link to="" className="text-orange-400">
-          {item.user?.name}
+          {/* proptypes으로 한번 걸러줬기 때문에 '?'로 굳이 존재유무 검사 안해도 OK */}
+          {item.user.name || "익명"}
         </Link>
-        <time className="ml-auto text-gray-500" dateTime="2024.07.02 14:11:22">
+        <time className="ml-auto text-gray-500" dateTime={`$ {item.createdAt}`}>
           {item.createdAt}
         </time>
       </div>

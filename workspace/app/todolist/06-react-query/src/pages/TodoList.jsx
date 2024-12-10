@@ -38,12 +38,20 @@ function TodoList() {
   const { data, refetch } = useQuery({
     // useQuery의 queryKey가 변경되는 순간, queryFn이 실행됨
     // => queryKey = useEffect의 두번째 파라미터와 동일한 포지션..
+
+    // 🖍️ queryKey는 React Query가 데이터를 식별하고 캐싱하는 기준이 됩니다. 이때, params 객체를 queryKey에 포함하면, 검색 조건이 변경될 때마다 React Query가 새로운 데이터를 가져오도록 자동으로 처리
     queryKey: ["할일 목록을 조회하는 쿼리", params],
-    queryFn: () => axios.get("/todolist", { params }),
+
+    // 🖍️ axios.get()의 두 번째 인자로 params를 전달하면, Axios가 자동으로 쿼리 문자열(?key=value)을 생성
+    queryFn: () => axios.get("/todolist", { params }), // /todolist?keyword=환승&page=1&limit=5
+
     select: (res) => res.data,
     staleTime: 1000 * 60, // 캐시된지 fresh -> stale 상태로 전환되는데 걸리는 시간, 60초 = 1분동안 기존 캐시를 쓰고, 1분 뒤에는 stale되므로 새롭게 받아서 쓰겠다는 말. (기본값: 0 으로, 캐시 안함..) fresh됐따면 데이터 바꿀 필요 없지만, Stale됐다면, 일단 이전에 캐시된 데이터를 보여주고, 1-2초 뒤에 fresh된 데이터를 업데이트(리렌더링).
-    gcTime: 1000 * 60 * 5, // 캐시된 데이터가 얼마동안 사용되지 않으면 제거할지 지정(디폴트 5분)
-    refetchOnMount: "always", // fresh 상태여도 요청받아서 새롭게 업데이트된 내용을 가져오겠다(실제로 업데이트되지 않아도)
+    gcTime: 1000 * 60 * 5, // 캐시된 데이터가 얼마동안 사용되지 않으면 메모리에서 제거할지 지정(Default: 5분)
+    refetchOnMount: "always", // fresh 상태여도 새롭게 업데이트된 내용이 있을 가능성 때문에 요청받아서 새롭게 업데이트된 내용을 가져오겠다(실제로 업데이트되지 않아도)
+    // * true: 캐시 데이터가 stale 상태일 때만 요청(always는 fresh일 때도 새롭게 요청해 데이터 요청)
+    // * false(Default): 캐시된 데이터가 fresh 상태라면 캐시 데이터를 사용하고, 굳이 네트워크 요청을 하지 않음
+    // 이 속성은 쿼리 데이터가 이미 캐시에 있어도 컴포넌트가 새롭게 마운트될 때 데이터를 다시 가져오도록 제어
   });
 
   // 삭제 작업

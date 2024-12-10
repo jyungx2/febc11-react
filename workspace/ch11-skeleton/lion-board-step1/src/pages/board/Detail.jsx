@@ -18,7 +18,7 @@ export default function Detail() {
 
   // 어떤 파라미터(useParams())가 왔냐에 따라서, url 뒤에 해당 파라미터값을 붙일 수 있다.
   const { data } = useQuery({
-    queryKey: ["posts", _id],
+    queryKey: ["posts", _id], // CommentNew에서 댓글 업데이트할 때 staleTime을 거스르고 쿼리를 무효화시킬 때 필요한 key 배열
     queryFn: () => axios.get(`/posts/${_id}`, { params: { type } }),
     select: (res) => res.data,
     staleTime: 1000 * 10,
@@ -70,7 +70,8 @@ export default function Detail() {
         </form>
       </section>
 
-      <CommentList />
+      {/* data의 replies라는 속성을 보면 게시글마다 달린 댓글들이 보인다! => 댓글리스트를 화면에 출력하는 작업시, 상세 컴포넌트에서 받아온 데이터를 가지고, replies배열을 prop으로 전달해서 사용하고 있기 때문에 queryKey 또한 Detail 컴포넌트에서 쓴 것과 동일한 키로 무효화시켜줘야 한다. */}
+      <CommentList data={data.item.replies} />
     </main>
   );
 }

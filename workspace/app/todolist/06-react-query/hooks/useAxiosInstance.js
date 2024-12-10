@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 function useAxiosInstance() {
   const instance = axios.create({
     baseURL: "https://todo-api.fesp.shop/api",
-    timeout: 1000 * 15,
+    timeout: 1000 * 15, // 15초 지나면 API 요청 정상적으로 설정해도 에러 발생
     headers: {
       "Content-Type": "application/json", // request의 데이터 타입
       accept: "application/json", // response의 데이터 타입

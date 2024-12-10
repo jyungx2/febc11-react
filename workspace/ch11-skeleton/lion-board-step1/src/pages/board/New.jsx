@@ -18,7 +18,7 @@ export default function New() {
 
   const axios = useAxiosInstance();
   // List.jsx에 있는 useQuery부분 복사해옴 + _id 파라미터만 추가
-  const { type, _id } = useParams();
+  const { type } = useParams();
 
   const queryClient = useQueryClient();
 
