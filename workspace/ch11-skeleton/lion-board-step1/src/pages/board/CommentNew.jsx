@@ -1,18 +1,61 @@
+import InputError from "@components/InputError";
+import useAxiosInstance from "@hooks/useAxiosInstance";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+
 export default function CommentNew() {
+  // ✅ useNavigate() 훅 사용해 페이지 이동!
+  const navigate = useNavigate();
+  const axios = useAxiosInstance();
+
+  const queryClient = useQueryClient();
+  const { type, _id } = useParams();
+  const [content, setContent] = useState(""); // 댓글 내용
+
+  const addComment = useMutation({
+    mutationFn: (newComment) => {
+      // ✅ 사용자가 입력한 값(input요소에서 받아온 값) + type 속성까지 더해서 서버로 등록요청 보내야 한다.
+      return axios.post(`/posts/${_id}/replies`, newComment);
+    },
+    onSuccess: () => {
+      alert("댓글이 등록되었습니다.");
+      // 댓글 추가가 성공하면 댓글 목록을 다시 가져오기 위해 refetch
+      queryClient.invalidateQueries({ queryKey: ["comments", type, _id] });
+
+      // 현재 페이지 pathname === /:type/:_id
+      // navigate(`/${type}/${_id}`); // "절대경로" - 앞에 슬래시 하나 붙여서 목록 페이지로 이동하도록..
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (content.trim()) {
+      addComment.mutate({ content });
+      setContent(""); // 입력 필드 초기화
+    }
+  };
+
   return (
     <div className="p-4 border border-gray-200 rounded-lg">
       <h4 className="mb-4">새로운 댓글을 추가하세요.</h4>
-      <form action="#">
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <textarea
             rows="3"
             cols="40"
             className="block p-2 w-full text-sm border rounded-lg border-gray-300 bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
             placeholder="내용을 입력하세요."
-            name="comment"
+            // name="comment"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           ></textarea>
 
-          <p className="ml-2 mt-1 text-sm text-red-500">내용은 필수입니다.</p>
+          {/* <InputError target={errors.comment} /> */}
         </div>
         <button
           type="submit"

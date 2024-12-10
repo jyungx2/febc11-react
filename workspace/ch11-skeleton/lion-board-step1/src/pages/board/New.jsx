@@ -32,7 +32,7 @@ export default function New() {
       alert("게시물이 등록되었습니다.");
       // navigate(-1); // 한 페이지 뒤로 이동.
       // 현재 페이지 pathname: /free/new
-      queryClient.invalidateQueries(["posts", type]);
+      queryClient.invalidateQueries({ queryKey: ["posts", type] });
       navigate(`/${type}`); // "절대경로" - 앞에 슬래시 하나 붙여서 목록 페이지로 이동하도록..
     },
     onError: (err) => {

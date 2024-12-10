@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function Edit() {
-  const axios = useAxiosInstance;
+  const axios = useAxiosInstance();
   const { type, _id } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -33,11 +33,12 @@ export default function Edit() {
 
   // 입력값을 useMutation()으로 데이터 성공여부 처리 후 서버에 있는 데이터도 수정(axios.patch)
   // 🚨 게시글 수정(/posts/{_id})는 로그인한 회원만 가능.. Authorization key가 header에 필요!! => 수정기능이 제대로 동작하려면, 로그인 기능을 먼저 구현해야 한다.
+
   const updateItem = useMutation({
-    mutationFn: (formData) => axios.patch(`/posts`, formData),
+    mutationFn: (formData) => axios.patch(`/posts/${_id}`, formData),
     onSuccess: () => {
       alert("게시물이 수정되었습니다.");
-      queryClient.invalidateQueries(["posts", _id]);
+      queryClient.invalidateQueries({ queryKey: ["posts", _id] });
       navigate(`/${type}/${_id}`);
     },
     onError: (err) => {
