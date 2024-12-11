@@ -3,7 +3,7 @@ import useUserStore from "@zustand/userStore";
 import axios from "axios";
 
 function useAxiosInstance() {
-  // const { user } = useUserStore();
+  const { user } = useUserStore();
   const instance = axios.create({
     baseURL: "https://11.fesp.shop",
     timeout: 1000 * 15, // 15초 지나면 API 요청 정상적으로 설정해도 에러 발생
@@ -16,9 +16,9 @@ function useAxiosInstance() {
 
   // 🚧 요청 인터셉터 추가하기
   instance.interceptors.request.use((config) => {
-    // if (user) {
-    //   config.headers["Authorization"] = `Bearer ${user.accessToken}`;
-    // }
+    if (user) {
+      config.headers["Authorization"] = `Bearer ${user.accessToken}`;
+    }
 
     // 요청이 전달되기 전에 필요한 공통 작업 수행
     // console.log(config);

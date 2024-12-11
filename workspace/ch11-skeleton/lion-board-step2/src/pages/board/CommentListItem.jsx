@@ -1,5 +1,6 @@
 import useAxiosInstance from "@hooks/useAxiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useUserStore from "@zustand/userStore";
 import PropTypes from "prop-types";
 import { Link, useParams } from "react-router-dom";
 
@@ -8,14 +9,16 @@ CommentListItem.propTypes = {
     _id: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     user: PropTypes.shape({
+      _id: PropTypes.number,
       name: PropTypes.string,
-      image: PropTypes.string,
+      image: PropTypes.object,
     }).isRequired,
     createdAt: PropTypes.string.isRequired,
   }).isRequired,
 };
 
 export default function CommentListItem({ item }) {
+  const { user } = useUserStore();
   const axios = useAxiosInstance();
   const queryClient = useQueryClient();
   const { _id } = useParams();
@@ -26,17 +29,13 @@ export default function CommentListItem({ item }) {
     // prop(=item)으로 받아온 _id : 댓글의 고유한 id === {reply_id}
     mutationFn: (_id) => axios.delete(`/posts/${_id}/replies/${item._id}`),
     onSuccess: () => {
-      // Detail에서 댓글 데이터 prop으로 전달 받아옴 - Detail컴포넌트에서 쓴 useQuery의 queryKey와 동일하게..
       queryClient.invalidateQueries({ queryKey: ["posts", _id] });
-      // 현재 페이지 pathname: /:type/:_id => 화면 이동 안 할거니까 아래 코드 필요없음.
       // navigate(`/${type}/${_id}`);
     },
   });
 
-  // const onDelete = (e) => {
-  //   e.preventDefault();
-  //   removeComment.mutate(_id);
-  // };
+  console.log(user);
+  console.log(user?._id === item.user._id);
 
   return (
     <div className="shadow-md rounded-lg p-4 mb-4">
@@ -59,14 +58,15 @@ export default function CommentListItem({ item }) {
       <div className="flex justify-between items-center mb-2">
         {/* <form action="#"> */}
         <pre className="whitespace-pre-wrap text-sm">{item.content}</pre>
-        <button
-          // <button>의 type="submit"은 버튼이 폼(form) 내부에 있을 때만 폼 제출을 트리거합니다. 따라서 버튼이 폼으로 감싸져 있지 않으면 **새로고침(기본 폼 제출 동작)**은 발생하지 않습니다.
-          type="submit"
-          className="bg-red-500 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded"
-          onClick={() => removeComment.mutate(_id)}
-        >
-          삭제
-        </button>
+        {user?._id === item.user._id && (
+          <button
+            type="submit"
+            className="bg-red-500 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded"
+            onClick={() => removeComment.mutate(_id)}
+          >
+            삭제
+          </button>
+        )}
         {/* </form> */}
       </div>
     </div>

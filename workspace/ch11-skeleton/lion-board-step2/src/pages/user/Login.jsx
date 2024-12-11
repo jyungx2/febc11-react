@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   // zustand이 관리하고 있는 store으로부터 상태값을 변경하는 setUser함수만 가져옴
   // const { setUser } = useUserState();
-  // const setUser = useUserStore((store) => store.setUser);
+  const setUser = useUserStore((store) => store.setUser);
 
   // ✅ useNavigate() 훅 사용해 페이지 이동!
   const navigate = useNavigate();
@@ -20,7 +20,12 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: "j.lee16@gmail.com",
+      password: "12341234",
+    },
+  });
 
   const axios = useAxiosInstance();
 
@@ -29,18 +34,18 @@ export default function Login() {
     onSuccess: (res) => {
       console.log(res);
 
-      // // 회원정보 저장
-      // const user = res.data.item;
-      // // 받아온 응답으로부터 data.item으로 접근하여 내가 필요한 만큼
-      // // 뽑아와서 적절한 키 네임으로 setUser로 user 상태값을 저장하면 된다.
-      // // 현재 이 컴포넌트에서 user 상태는 직접적으로 사용하진 않지만, store가 자동으로 구독이 되기 때문에 user상태 변경시(setUser만 호출해도) 리렌더링 발생!
-      // setUser({
-      //   _id: user._id,
-      //   name: user.name,
-      //   profile: user.image?.path,
-      //   accessToken: user.token.accessToken,
-      //   refreshToken: user.token.refreshToken,
-      // });
+      // 회원정보 저장
+      const user = res.data.item;
+      // 받아온 응답으로부터 data.item으로 접근하여 내가 필요한 만큼
+      // 뽑아와서 적절한 키 네임으로 setUser로 user 상태값을 저장하면 된다.
+      // 현재 이 컴포넌트에서 user 상태는 직접적으로 사용하진 않지만, store가 자동으로 구독이 되기 때문에 user상태 변경시(setUser만 호출해도) 리렌더링 발생!
+      setUser({
+        _id: user._id,
+        name: user.name,
+        profile: user.image?.path,
+        accessToken: user.token.accessToken,
+        refreshToken: user.token.refreshToken,
+      });
 
       alert(res.data.item.name + "님, 로그인 되었습니다.");
       navigate(`/`); // 회원가입 끝나면 메인 페이지로 이동해라.
