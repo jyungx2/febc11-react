@@ -2,12 +2,14 @@ import ListItem from "@pages/board/ListItem";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosInstance from "@hooks/useAxiosInstance";
+import useUserStore from "@zustand/userStore";
 
 export default function List() {
   // 🖍️error -> toast로 보여주자
   // 🖍️isLoading -> suspense로 처리하자
 
   const axios = useAxiosInstance();
+  const { user } = useUserStore();
 
   const { type } = useParams(); // localhost/:type => type: info
   // /✨:type✨
@@ -55,13 +57,15 @@ export default function List() {
           </button>
         </form>
 
-        <Link
-          // 상대경로 : to="new"로 해줘도 밑의 절대경로로 쓴 것과 동일한 결과.
-          to={`/${type}/new`}
-          className="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
-        >
-          글작성
-        </Link>
+        {user && (
+          <Link
+            // 상대경로 : to="new"로 해줘도 밑의 절대경로로 쓴 것과 아래의 절대경로와 동일한 결과.
+            to={`/${type}/new`}
+            className="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded"
+          >
+            글작성
+          </Link>
+        )}
       </div>
       <section className="pt-10">
         <table className="border-collapse w-full table-fixed">

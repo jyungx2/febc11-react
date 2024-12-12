@@ -39,7 +39,7 @@ export default function CommentList({ data = [] }) {
     <section className="mb-8">
       <h4 className="mt-8 mb-4 ml-2">댓글 {list.length}개</h4>
       {list}
-      {user && <CommentNew />}
+      {<CommentNew />}
     </section>
   );
 }

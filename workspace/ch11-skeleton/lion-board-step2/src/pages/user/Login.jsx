@@ -3,7 +3,7 @@ import useAxiosInstance from "@hooks/useAxiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import useUserStore from "@zustand/userStore";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login() {
   // zustand이 관리하고 있는 store으로부터 상태값을 변경하는 setUser함수만 가져옴
@@ -12,6 +12,9 @@ export default function Login() {
 
   // ✅ useNavigate() 훅 사용해 페이지 이동!
   const navigate = useNavigate();
+
+  // ✨ 작업 중이던 로그인 후, 다시 유저를 원래 작업중이던 페이지로 돌아가게 하기 위한 코드
+  const location = useLocation();
 
   // ✅ useState 대신, useForm 훅을 이용한 인풋 데이터 처리
   // 다음 register, handleSubmit, formState속성은 필수값!
@@ -48,7 +51,10 @@ export default function Login() {
       });
 
       alert(res.data.item.name + "님, 로그인 되었습니다.");
-      navigate(`/`); // 회원가입 끝나면 메인 페이지로 이동해라.
+
+      // ✨ 작업 중이던 로그인 후, 다시 유저를 원래 작업중이던 페이지로 돌아가게 하기 위한 코드
+      // navigate(`/`); // 회원가입 끝나면 메인 페이지로 이동해라.
+      navigate(location.state?.from || `/`);
     },
     onError: (err) => {
       console.error(err);
