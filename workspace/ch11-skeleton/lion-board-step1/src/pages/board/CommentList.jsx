@@ -20,8 +20,8 @@ export default function CommentList({ data = [] }) {
 
   // const { type, _id } = useParams();
   // const { data } = useQuery({
-  //   queryKey: ["posts", _id, "replies", type],
-  //   queryFn: () => axios.get(`/posts/${_id}/replies`, { params: { type } }),
+  //   queryKey: [ "posts", _id, "replies"],
+  //   queryFn: () => axios.get(`/posts/${_id}/replies`, { params: { type, _id } }),
   //   select: (res) => res.data,
   //   staleTime: 1000 * 10,
   // });

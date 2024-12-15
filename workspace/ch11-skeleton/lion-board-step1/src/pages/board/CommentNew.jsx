@@ -27,7 +27,7 @@ export default function CommentNew() {
       // 댓글 추가가 성공하면 댓글 목록을 다시 가져오기 위해 refetch
       queryClient.invalidateQueries({
         queryKey: ["posts", _id],
-      }); // 89번 글의 댓글을 무효화 => commentList에서 queryKey에 썼던 것을 써야 함....똑같이 써야하나?? YES.
+      }); // 89번 글의 댓글을 무효화 => commentList에서 queryKey에 썼던 것을 써야 함....똑같이 써야하나?? YES. // ✅ commentList에서 useQuery로 받아오지 말고, Detail.jsx에서 받아온 data.item안의 replies속성 안에 댓글 데이터들이 객체형태로 배열 안에 나열되어 있는 걸 prop으로 뽑아오는 방식 채택하자!!
 
       // 현재 페이지 pathname === /:type/:_id 에서 다시 "업데이트된" 현재 페이지로
       navigate(`/${type}/${_id}`); // "절대경로" - 앞에 슬래시 하나 붙여서 목록 페이지로 이동하도록..

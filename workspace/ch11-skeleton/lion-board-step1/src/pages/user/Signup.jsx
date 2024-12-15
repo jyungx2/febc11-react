@@ -44,6 +44,7 @@ export default function Signup() {
           data: imageFormData,
         });
         // 최종적으로 유저가 등록한 이미지 정보는 image라는 속성 이름으로 저장
+        // userInfo.image는 { path: "/uploads/image1.jpg", size: 12345, type: "image/jpeg" }와 같은 ✨전체 객체✨를 저장. => 이미지 경로(path)뿐만 아니라, 파일의 크기(size), 타입(type) 등 추가 정보가 필요할 때 사용.
         userInfo.image = fileRes.data.item[0];
         // attach는 유저가 입력한 정보로부터 이미지 정보를 빼내기 위해 일시적으로 사용한 키..
         delete userInfo.attach;
@@ -65,15 +66,18 @@ export default function Signup() {
       // 특정 인풋요소의 유효성 실패 || 일반적인 오류('잘못된 값이 있습니다') || 잠시후 다시 요청하세요(서버 또는 네트워크 오류)
       // => 이렇게 alert로 단순하게 에러를 알려주는 것보다, 입력 필드 바로 아래에 나타내주는 것이 UX친화적!! => useForm의 'setError' 속성 사용
       if (err.response?.data.errors) {
+        // 1) 서버에서 유효성 검사 실패로 인한 에러가 있는 경우
         err.response?.data.errors.forEach((error) =>
           // setError함수를 이용해 에러 객체를 만들어서 입력 필드 바로 아래에 오류 메시지가 뜨도록.. (key, value를 각각 이런 식으로 설정)
           setError(error.path, { message: error.msg })
         );
       } else {
+        // 2) 유효성 관련 에러가 아닌 일반적인 에러 메시지 처리
         alert(
           err.response?.data.errors?.[0].msg ||
             err.response?.data.message ||
-            "잠시 후 다시 요청하세요."
+            // 서버에서 일반적인 에러 메시지가 있으면 표시
+            "잠시 후 다시 요청하세요." // 서버 메시지가 없으면 기본 메시지 표시
         );
       }
     },

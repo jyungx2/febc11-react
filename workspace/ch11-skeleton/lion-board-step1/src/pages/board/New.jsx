@@ -24,7 +24,7 @@ export default function New() {
 
   const addItem = useMutation({
     mutationFn: (formData) => {
-      // ✅ 사용자가 입력한 값(input요소에서 받아온 값) + type 속성까지 더해서 서버로 등록요청 보내야 한다.
+      // ✅ 사용자가 입력한 값(input요소에서 받아온 값(객체) = {title: '', content: ''}) + 어느 게시판에 게시글을 추가할 건지에 대한 정보가 필요하므로 type 속성까지 더해서 서버로 등록요청 보내야 한다.
       formData.type = type;
       return axios.post(`/posts`, formData);
     },

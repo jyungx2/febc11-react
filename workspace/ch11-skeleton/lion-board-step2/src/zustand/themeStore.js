@@ -6,6 +6,8 @@ const ThemeStore = (set) => ({
   // isDarkMode: false,
 
   // 사용자의 기존 설정에 맞게 다크모드 정의
+  // 1️⃣ window.matchMedia("(prefers-color-scheme: dark)"): 사용자의 시스템이 다크 모드를 선호하는지 여부를 나타내는 MediaQueryList 객체를 반환
+  // 2️⃣ .matches: 그 객체가 다크 모드에 맞는지 확인하고, 맞다면 true를, 아니라면 false를 반환합니다.
   isDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches
     ? true
     : false,
