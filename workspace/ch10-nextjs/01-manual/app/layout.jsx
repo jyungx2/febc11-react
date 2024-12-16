@@ -4,8 +4,9 @@ export default function RootLayout({ children }) {
       <head>
         <title>Next.js App</title>
       </head>
-
-      <body>{children}</body>
+      <body>
+        { children }
+      </body>
     </html>
   );
 }
